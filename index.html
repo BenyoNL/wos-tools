@@ -25,13 +25,14 @@
         .list-item:active { transform: scale(0.98); }
         .card-item { background: rgba(224, 159, 62, 0.2); border-left: 4px solid #e09f3e; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px;}
         
-        .album-row { display: flex; align-items: center; justify-content: flex-start; width: 100%; }
-        .album-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
-        .album-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .album-name { font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #fff;}
-        .progress-bg { width: 100%; height: 14px; background: rgba(0,0,0,0.6); border-radius: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative;}
+        /* ÚJ, HATALMAS ALBUM DIZÁJN */
+        .album-card { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 25px 15px; }
+        .album-title-large { font-size: 24px; font-weight: bold; color: #e09f3e; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; text-align: center; }
+        .album-img-large { width: 100%; max-width: 280px; height: auto; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.5); margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
+        .progress-container { width: 100%; max-width: 280px; }
+        .progress-bg { width: 100%; height: 16px; background: rgba(0,0,0,0.6); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative;}
         .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #34ce57); width: 0%; transition: width 0.4s ease; }
-        .progress-text { font-size: 13px; color: #ddd; text-align: right; margin-top: 4px; font-weight: normal;}
+        .progress-text { font-size: 14px; color: #ddd; text-align: right; margin-top: 5px; font-weight: bold;}
 
         #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);}
         #lang-selector { width: auto; padding: 8px; margin: 0; font-size: 14px; background: rgba(255,255,255,0.9); color: #000; border-radius: 5px;}
@@ -56,12 +57,6 @@
 
         #toast-msg { visibility: hidden; min-width: 250px; background-color: rgba(40, 167, 69, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 15px; position: fixed; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, visibility 0.3s; pointer-events: none; backdrop-filter: blur(5px); }
         #toast-msg.show { visibility: visible; opacity: 1; }
-        
-        .match-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 10px; margin: 15px auto; width: 90%; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.2);}
-        .match-card h4 { margin: 0 0 10px 0; color: #e09f3e; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; font-size: 20px;}
-        .match-detail { margin: 8px 0; font-size: 14px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;}
-        .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
-        
         hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;}
     </style>
 </head>
@@ -102,7 +97,7 @@
                 <small style="color: #ccc;"><span class="t-state">State</span>: <b id="display-server" style="color:#fff;"></b> | <span class="t-alliance">Alliance</span>: <b id="display-alliance" style="color:#fff;"></b></small>
             </div>
             <div>
-                <select id="lang-selector" onchange="window.changeLanguage(this.value)">
+                <select id="lang-selector">
                     <option value="en" selected>🇬🇧 English</option>
                     <option value="hu">🇭🇺 Magyar</option>
                     <option value="de">🇩🇪 Deutsch</option>
@@ -115,8 +110,8 @@
         </div>
         
         <div class="action-buttons">
-            <button onclick="window.runMatchmaker('alliance')" class="btn btn-blue t-btn-clan" style="width: 48%; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);">🤝 Search in Clan</button>
-            <button onclick="window.runMatchmaker('state')" class="btn btn-dark t-btn-state" style="width: 48%;">🌍 Search in State</button>
+            <button id="btn-match-clan" class="btn btn-blue t-btn-clan" style="width: 48%; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);">🤝 Search in Clan</button>
+            <button id="btn-match-state" class="btn btn-dark t-btn-state" style="width: 48%;">🌍 Search in State</button>
         </div>
 
         <div id="search-bar">
@@ -140,8 +135,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // IDE MÁSOLD BE A SAJÁT KULCSODAT!
- const firebaseConfig = {
+const firebaseConfig = {
   apiKey: "AIzaSyDeEK5nOuvuELtGd61Q7W04uKGcJqG1L1U",
   authDomain: "tundra-album.firebaseapp.com",
   projectId: "tundra-album",
@@ -150,6 +144,7 @@
   appId: "1:469371801375:web:71007b232a98fe8bdbea2a",
   measurementId: "G-2LQT9X23X5"
 };
+
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -171,8 +166,8 @@
         };
         let currLang = 'en';
 
-        // --- GLOBÁLIS FUNKCIÓK A HTML GOMBOKHOZ ---
-        window.changeLanguage = function(lang) {
+        // GOMBOK JAVÍTÁSA (Most már biztosan működnek a háttérből)
+        function changeLanguage(lang) {
             currLang = lang;
             document.querySelector('.t-state').textContent = i18n[lang].state;
             document.querySelector('.t-alliance').textContent = i18n[lang].alliance;
@@ -182,12 +177,17 @@
             document.querySelector('.t-btn-save').textContent = i18n[lang].btnSave;
             document.querySelector('.t-btn-logout').textContent = i18n[lang].btnLogout;
             
-            if(document.getElementById('view-albums').style.display === 'block') window.renderAlbums();
-            if(document.getElementById('view-cards').style.display === 'block') window.renderCards(currentAlbumGlobal);
-            if(document.getElementById('view-puzzle').style.display === 'block') window.renderPuzzle(currentAlbumGlobal, currentCardGlobal);
-        };
+            if(document.getElementById('view-albums').style.display === 'block') renderAlbums();
+            if(document.getElementById('view-cards').style.display === 'block') renderCards(currentAlbumGlobal);
+            if(document.getElementById('view-puzzle').style.display === 'block') renderPuzzle(currentAlbumGlobal, currentCardGlobal);
+        }
 
-        // ITT VAN MIND A 16 ALBUM! A képek neveit itt tudod átírni a sajátodra!
+        document.getElementById('lang-selector').addEventListener('change', (e) => changeLanguage(e.target.value));
+        document.getElementById('btn-match-clan').addEventListener('click', () => runMatchmaker('alliance'));
+        document.getElementById('btn-match-state').addEventListener('click', () => runMatchmaker('state'));
+        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+        // MIND A 16 ALBUM VISSZAÁLLÍTVA
         const albumAdatok = [
             { id: "album_0", kepFajlNev: "album_0.jpg", en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok", fr: "Flammes ravivées", tr: "Yeniden Alevlenen", ru: "Вновь зажженное", ar: "نيران مشتعلة" },
             { id: "album_1", kepFajlNev: "album_1.jpg", en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot", fr: "Explorer le monde", tr: "Dünyayı Keşfet", ru: "Исследуй мир", ar: "استكشف العالم" },
@@ -232,7 +232,7 @@
         document.getElementById('email-register-btn').addEventListener('click', () => createUserWithEmailAndPassword(auth, document.getElementById('email-input').value, document.getElementById('password-input').value).catch(e => document.getElementById('auth-error').textContent = e.message));
         document.getElementById('email-login-btn').addEventListener('click', () => signInWithEmailAndPassword(auth, document.getElementById('email-input').value, document.getElementById('password-input').value).catch(e => document.getElementById('auth-error').textContent = "Incorrect login details."));
         document.getElementById('google-login-btn').addEventListener('click', () => signInWithPopup(auth, provider).catch(e => console.error(e)));
-        document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+        
 
         document.getElementById('save-profile-btn').addEventListener('click', async () => {
             const pName = document.getElementById('player-name').value.trim();
@@ -253,7 +253,7 @@
                 document.getElementById('display-server').textContent = data.szerver;
                 document.getElementById('display-alliance').textContent = data.szovetseg;
                 userInventory = data.inventory || {}; 
-                window.renderAlbums(); 
+                renderAlbums(); 
                 showScreen(mainScreen);
             } else { showScreen(profileScreen); }
         }
@@ -268,7 +268,8 @@
         const viewPuzzle = document.getElementById('view-puzzle');
         function hideAllViews() { viewAlbums.style.display = 'none'; viewCards.style.display = 'none'; viewPuzzle.style.display = 'none'; document.getElementById('view-matchmaker').style.display='none'; document.getElementById('view-search-results').style.display='none'; }
 
-        window.renderAlbums = function() {
+        // --- ÚJ ALBUM NÉZET: ÓRIÁSI KÉPEKKEL ---
+        function renderAlbums() {
             hideAllViews();
             currentAlbumGlobal = null; currentCardGlobal = null;
             viewAlbums.innerHTML = '';
@@ -288,35 +289,41 @@
                 const progressPct = Math.round((completedCards / album.cards.length) * 100);
 
                 const btn = document.createElement('div');
-                btn.className = 'list-item';
-                btn.onclick = () => window.renderCards(album);
+                btn.className = 'list-item album-card'; // Használjuk az új CSS stílust
+                btn.onclick = () => renderCards(album);
                 
                 btn.innerHTML = `
-                    <div class="album-row">
-                        <img src="${album.image}" class="album-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23555%22/%3E%3Ctext x=%2230%22 y=%2235%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
-                        <div class="album-info">
-                            <div class="album-name">${aName}</div>
-                            <div class="progress-bg">
-                                <div class="progress-bar" style="width: ${progressPct}%"></div>
-                            </div>
-                            <div class="progress-text">${completedCards} / ${album.cards.length}</div>
+                    <div class="album-title-large">${aName}</div>
+                    <img src="${album.image}" class="album-img-large" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23555%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
+                    <div class="progress-container">
+                        <div class="progress-bg">
+                            <div class="progress-bar" style="width: ${progressPct}%"></div>
                         </div>
+                        <div class="progress-text">${completedCards} / ${album.cards.length} ${i18n[currLang].cardsOwnedInfo.split(' ')[0]}</div>
                     </div>
                 `;
                 viewAlbums.appendChild(btn);
             });
             viewAlbums.style.display = 'block';
-        };
+        }
 
-        window.renderCards = function(album) {
+        function renderCards(album) {
             hideAllViews();
             currentAlbumGlobal = album;
             viewCards.innerHTML = '';
             const aName = album.names[currLang] || album.names['en'];
 
-            viewCards.innerHTML += `<button class="btn btn-back" onclick="window.renderAlbums()">${i18n[currLang].backAlbum}</button>
-                                    <h3 style="text-align:left; margin-top:0;">📖 ${aName}</h3>
-                                    <p style="text-align:right; font-size:12px; color:#aaa; margin-bottom:5px;">${i18n[currLang].cardsOwnedInfo} ⬇</p>`;
+            // Vissza gomb dinamikus létrehozása (így biztosan működik)
+            const backBtn = document.createElement('button');
+            backBtn.className = 'btn btn-back';
+            backBtn.textContent = i18n[currLang].backAlbum;
+            backBtn.onclick = () => renderAlbums();
+            viewCards.appendChild(backBtn);
+
+            viewCards.insertAdjacentHTML('beforeend', `
+                <h3 style="text-align:left; margin-top:0;">📖 ${aName}</h3>
+                <p style="text-align:right; font-size:12px; color:#aaa; margin-bottom:5px;">${i18n[currLang].cardsOwnedInfo} ⬇</p>
+            `);
             
             album.cards.forEach(card => {
                 let isComplete = true;
@@ -328,13 +335,12 @@
                 const row = document.createElement('div');
                 row.className = 'list-item card-item';
                 row.innerHTML = `<span style="flex-grow:1; text-align:left;">${card.name}</span>`;
-                row.onclick = () => window.renderPuzzle(album, card);
+                row.onclick = () => renderPuzzle(album, card);
                 
                 const fastFillBtn = document.createElement('div');
                 fastFillBtn.className = `check-btn ${isComplete ? 'checked' : 'unchecked'}`;
                 fastFillBtn.innerHTML = '✔';
                 
-                // Kapcsoló (Toggle) működés!
                 fastFillBtn.onclick = (e) => {
                     e.stopPropagation(); 
                     if(isComplete) {
@@ -348,26 +354,47 @@
                             if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1;
                         }
                     }
-                    window.renderCards(album); 
+                    renderCards(album); 
                 };
                 
                 row.appendChild(fastFillBtn);
                 viewCards.appendChild(row);
             });
             viewCards.style.display = 'block';
-        };
+        }
 
-        window.renderPuzzle = function(album, card) {
+        function renderPuzzle(album, card) {
             hideAllViews();
             currentAlbumGlobal = album; currentCardGlobal = card;
             viewPuzzle.innerHTML = '';
             const aName = album.names[currLang] || album.names['en'];
 
-            viewPuzzle.innerHTML += `<div style="display:flex; justify-content:space-between;">
-                                        <button class="btn btn-back" onclick="window.renderCards(currentAlbumGlobal)" style="margin:0;">${i18n[currLang].backCard}</button>
-                                        <button class="btn btn-green btn-small" style="margin:0;" onclick="window.fillCurrentCard()">${i18n[currLang].markDone}</button>
-                                     </div>
-                                     <h3 style="text-align:left;"><small style="color:#e09f3e;">${aName}</small><br>${card.name}</h3>`;
+            const topDiv = document.createElement('div');
+            topDiv.style.display = "flex"; topDiv.style.justifyContent = "space-between";
+            
+            const backBtn = document.createElement('button');
+            backBtn.className = 'btn btn-back';
+            backBtn.style.margin = "0";
+            backBtn.textContent = i18n[currLang].backCard;
+            backBtn.onclick = () => renderCards(album);
+
+            const fillBtn = document.createElement('button');
+            fillBtn.className = 'btn btn-green btn-small';
+            fillBtn.style.margin = "0";
+            fillBtn.textContent = i18n[currLang].markDone;
+            fillBtn.onclick = () => {
+                for(let p = 1; p <= card.pieceCount; p++) {
+                    const pid = `${card.id}_piece_${p}`;
+                    if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1; 
+                }
+                renderPuzzle(album, card);
+            };
+
+            topDiv.appendChild(backBtn);
+            topDiv.appendChild(fillBtn);
+            viewPuzzle.appendChild(topDiv);
+
+            viewPuzzle.insertAdjacentHTML('beforeend', `<h3 style="text-align:left;"><small style="color:#e09f3e;">${aName}</small><br>${card.name}</h3>`);
             
             const grid = document.createElement('div');
             grid.className = 'puzzle-grid';
@@ -387,8 +414,8 @@
                 pieceDiv.tabIndex = 0; 
                 
                 pieceDiv.onkeydown = (e) => {
-                    if (e.key === 'ArrowUp') { window.updateQty(pieceId, 1); e.preventDefault(); }
-                    if (e.key === 'ArrowDown') { window.updateQty(pieceId, -1); e.preventDefault(); }
+                    if (e.key === 'ArrowUp') { updateQty(pieceId, 1); e.preventDefault(); }
+                    if (e.key === 'ArrowDown') { updateQty(pieceId, -1); e.preventDefault(); }
                     if (e.key === 'ArrowRight') { if(pieceDiv.nextElementSibling) pieceDiv.nextElementSibling.focus(); e.preventDefault(); }
                     if (e.key === 'ArrowLeft') { if(pieceDiv.previousElementSibling) pieceDiv.previousElementSibling.focus(); e.preventDefault(); }
                 };
@@ -396,26 +423,24 @@
                 pieceDiv.innerHTML = `
                     <div class="piece-shape">${p}</div>
                     <div class="controls">
-                        <button tabindex="-1" class="qty-btn minus" onclick="window.updateQty('${pieceId}', -1); document.getElementById('box-${pieceId}').focus();">-</button>
+                        <button tabindex="-1" class="qty-btn minus" onclick="document.getElementById('box-${pieceId}').focus();" id="minus-${pieceId}">-</button>
                         <span class="qty-display" id="qty-${pieceId}">${displayQty}</span>
-                        <button tabindex="-1" class="qty-btn plus" onclick="window.updateQty('${pieceId}', 1); document.getElementById('box-${pieceId}').focus();">+</button>
+                        <button tabindex="-1" class="qty-btn plus" onclick="document.getElementById('box-${pieceId}').focus();" id="plus-${pieceId}">+</button>
                     </div>
                 `;
                 grid.appendChild(pieceDiv);
+                
+                // Event listenerek a plusz-minusz gombokhoz, hogy kikerüljük az inline onClick problémákat
+                setTimeout(() => {
+                    document.getElementById(`minus-${pieceId}`).addEventListener('click', () => updateQty(pieceId, -1));
+                    document.getElementById(`plus-${pieceId}`).addEventListener('click', () => updateQty(pieceId, 1));
+                }, 0);
             }
             viewPuzzle.appendChild(grid);
             viewPuzzle.style.display = 'block';
-        };
+        }
 
-        window.fillCurrentCard = function() {
-            for(let p = 1; p <= currentCardGlobal.pieceCount; p++) {
-                const pid = `${currentCardGlobal.id}_piece_${p}`;
-                if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1; 
-            }
-            window.renderPuzzle(currentAlbumGlobal, currentCardGlobal); 
-        };
-
-        window.updateQty = function(pieceId, change) {
+        function updateQty(pieceId, change) {
             let currentQty = userInventory[pieceId] || 0;
             currentQty += change;
             if (currentQty < 0) currentQty = 0; 
@@ -428,7 +453,7 @@
             else if(currentQty === 1) { displayQty = "✔"; } 
             else { displayQty = `+${currentQty - 1}`; pieceBox.classList.add('piece-surplus'); }
             document.getElementById(`qty-${pieceId}`).textContent = displayQty;
-        };
+        }
 
         document.getElementById('save-inventory-btn').addEventListener('click', async () => {
             const toast = document.getElementById('toast-msg');
@@ -440,8 +465,7 @@
             } catch (error) { console.error(error); }
         });
 
-        // MATCHMAKER LOGIKA (CSERE MOTOR)
-        window.runMatchmaker = async function(scope) {
+        async function runMatchmaker(scope) {
             hideAllViews();
             const viewMatchmaker = document.getElementById('view-matchmaker');
             viewMatchmaker.innerHTML = '<h3>⏳...</h3>';
@@ -450,7 +474,7 @@
             const backBtn = document.createElement('button');
             backBtn.className = 'btn btn-back';
             backBtn.textContent = i18n[currLang].backAlbum;
-            backBtn.onclick = () => window.renderAlbums();
+            backBtn.onclick = () => renderAlbums();
 
             try {
                 const myServer = document.getElementById('display-server').textContent;
@@ -485,10 +509,10 @@
                                 const pieceName = `<b>${aName}</b><br>${card.name} / ${p}.`;
 
                                 if (myQty === 0 && otherQty >= 2) {
-                                    giveToMe.push(`<div class="trade-row"><span>🟢 ${pieceName}</span><button class="btn btn-green btn-small" onclick="window.executeTrade('${userDoc.id}', '${pieceId}', 'receive', this)">${i18n[currLang].traded}</button></div>`);
+                                    giveToMe.push(`<div class="trade-row"><span>🟢 ${pieceName}</span><button class="btn btn-green btn-small trade-action" data-uid="${userDoc.id}" data-piece="${pieceId}" data-type="receive">${i18n[currLang].traded}</button></div>`);
                                 }
                                 if (myQty >= 2 && otherQty === 0) {
-                                    takeFromMe.push(`<div class="trade-row"><span>🔵 ${pieceName}</span><button class="btn btn-blue btn-small" onclick="window.executeTrade('${userDoc.id}', '${pieceId}', 'give', this)">${i18n[currLang].traded}</button></div>`);
+                                    takeFromMe.push(`<div class="trade-row"><span>🔵 ${pieceName}</span><button class="btn btn-blue btn-small trade-action" data-uid="${userDoc.id}" data-piece="${pieceId}" data-type="give">${i18n[currLang].traded}</button></div>`);
                                 }
                             }
                         });
@@ -507,13 +531,23 @@
                 viewMatchmaker.appendChild(backBtn);
                 viewMatchmaker.insertAdjacentHTML('beforeend', `<h3>🤝 ${scope === 'alliance' ? myAlliance : myServer}</h3>`);
 
-                if (hasMatches) viewMatchmaker.insertAdjacentHTML('beforeend', resultsHtml);
+                if (hasMatches) {
+                    viewMatchmaker.insertAdjacentHTML('beforeend', resultsHtml);
+                    // Kötjük rá az event listenereket a friss gombokra!
+                    setTimeout(() => {
+                        document.querySelectorAll('.trade-action').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                executeTrade(this.getAttribute('data-uid'), this.getAttribute('data-piece'), this.getAttribute('data-type'), this);
+                            });
+                        });
+                    }, 0);
+                }
                 else viewMatchmaker.insertAdjacentHTML('beforeend', `<p>${i18n[currLang].noMatch}</p>`);
 
             } catch (error) { viewMatchmaker.innerHTML = '<h3>❌ Error</h3>'; viewMatchmaker.appendChild(backBtn); }
-        };
+        }
 
-        window.executeTrade = async function(otherUid, pieceId, type, btnElement) {
+        async function executeTrade(otherUid, pieceId, type, btnElement) {
             if(!confirm("Are you sure? This updates both inventories!")) return;
             btnElement.disabled = true;
             btnElement.textContent = "⏳...";
@@ -527,7 +561,7 @@
                 btnElement.textContent = "✅";
                 btnElement.style.backgroundColor = "#555";
             } catch(error) { alert("Trade error!"); btnElement.disabled = false; btnElement.textContent = i18n[currLang].traded; }
-        };
+        }
     </script>
 </body>
 </html>
