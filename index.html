@@ -25,14 +25,14 @@
         .list-item:active { transform: scale(0.98); }
         .card-item { background: rgba(224, 159, 62, 0.2); border-left: 4px solid #e09f3e; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px;}
         
-        /* ÚJ: Album lista dizájn képhez és csíkhoz */
+        /* ALBUM NÉZET ÉS FOLYAMATJELZŐ JAVÍTVA */
         .album-row { display: flex; align-items: center; justify-content: flex-start; width: 100%; }
-        .album-img { width: 60px; height: 60px; border-radius: 8px; object-fit: cover; margin-right: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); }
+        .album-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
         .album-info { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; }
-        .album-name { font-size: 18px; font-weight: bold; margin-bottom: 5px; }
-        .progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 4px; overflow: hidden; }
-        .progress-bar { height: 100%; background: #28a745; width: 0%; transition: width 0.3s ease; }
-        .progress-text { font-size: 12px; color: #aaa; text-align: right; margin-top: 2px;}
+        .album-name { font-size: 20px; font-weight: bold; margin-bottom: 8px; color: #fff;}
+        .progress-bg { width: 100%; height: 14px; background: rgba(0,0,0,0.6); border-radius: 7px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative;}
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #34ce57); width: 0%; transition: width 0.4s ease; }
+        .progress-text { font-size: 13px; color: #ddd; text-align: right; margin-top: 4px; font-weight: normal;}
 
         #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);}
         #lang-selector { width: auto; padding: 8px; margin: 0; font-size: 14px; background: rgba(255,255,255,0.9); color: #000; border-radius: 5px;}
@@ -50,7 +50,7 @@
         .piece-missing { background: linear-gradient(135deg, #4a5568, #2d3748); opacity: 0.8;}
         .piece-surplus { background: linear-gradient(135deg, #2b5876, #4e4376); }
         
-        .check-btn { width: 32px; height: 32px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.2); }
+        .check-btn { width: 34px; height: 34px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.2); }
         .check-btn.checked { background-color: #28a745; border-color: #28a745; color: white; box-shadow: 0 0 10px rgba(40,167,69,0.5);}
         .check-btn.unchecked { color: transparent; }
         .check-btn.unchecked:hover { background-color: rgba(255,255,255,0.1); border-color: white;}
@@ -131,7 +131,7 @@
         import { getAuth, signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-const firebaseConfig = {
+ const firebaseConfig = {
   apiKey: "AIzaSyDeEK5nOuvuELtGd61Q7W04uKGcJqG1L1U",
   authDomain: "tundra-album.firebaseapp.com",
   projectId: "tundra-album",
@@ -173,23 +173,35 @@ const firebaseConfig = {
             if(document.getElementById('view-puzzle').style.display === 'block') renderPuzzle(currentAlbumGlobal, currentCardGlobal);
         };
 
-        const albumTranslations = [
-            { en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok" },
-            { en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot" },
-            { en: "Daybreak Island", de: "Insel des Tagesanbruchs", hu: "Hajnal Sziget" }
-            // A többi albumot ide tudod majd beírni
+        // --- ÚJ LOGIKA: ITT ADOD MEG A KÉPEK PONTOS NEVÉT ---
+        const albumAdatok = [
+            { 
+                id: "album_0", 
+                kepFajlNev: "Rekindled_Flames.jpg", // Ide írd be a te fájlod nevét kiterjesztéssel!
+                en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok" 
+            },
+            { 
+                id: "album_1", 
+                kepFajlNev: "Explore_the_World.png", // Lehet png is!
+                en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot" 
+            },
+            { 
+                id: "album_2", 
+                kepFajlNev: "Daybreak_Island.jpg", // Itt a te képed!
+                en: "Daybreak Island", de: "Insel des Tagesanbruchs", hu: "Hajnal Sziget" 
+            }
         ];
 
-        // --- ÚJ LOGIKA: A kártyáknak megmondjuk, hány darabból állnak (pieceCount) ---
-        const gameData = albumTranslations.map((namesObj, aIdx) => {
+        // A rendszer automatikusan összerakja az adatbázist
+        const gameData = albumAdatok.map((album) => {
             return {
-                id: `album_${aIdx}`,
-                image: `images/album_${aIdx}.jpg`, // Automatikusan keresi az images/ mappában!
-                names: namesObj,
+                id: album.id,
+                image: `images/${album.kepFajlNev}`, // Automatikusan keresi az images/ mappában a megadott nevet
+                names: { en: album.en, hu: album.hu, de: album.de },
                 cards: Array.from({length: 9}, (_, cIdx) => ({ 
-                    id: `album_${aIdx}_card_${cIdx+1}`, 
+                    id: `${album.id}_card_${cIdx+1}`, 
                     name: `Card ${cIdx+1}`,
-                    pieceCount: 15 // Ezt majd később kártyánként átírhatjuk 12-re, 18-ra!
+                    pieceCount: 15 // Kártyák darabszáma
                 }))
             };
         });
@@ -203,7 +215,6 @@ const firebaseConfig = {
             screen.style.display = 'block';
         }
 
-        // --- Auth Logikák (rövidítve a minta kedvéért) ---
         onAuthStateChanged(auth, async (user) => {
             if (user) { 
                 currentUserUid = user.uid; 
@@ -225,7 +236,7 @@ const firebaseConfig = {
         const viewPuzzle = document.getElementById('view-puzzle');
         function hideAllViews() { viewAlbums.style.display = 'none'; viewCards.style.display = 'none'; viewPuzzle.style.display = 'none'; document.getElementById('view-matchmaker').style.display='none'; document.getElementById('view-search-results').style.display='none'; }
 
-        // --- ALBUMOK RENDERELÉSE FOLYAMATJELZŐVEL ---
+        // --- ALBUMOK RENDERELÉSE (Zöld csík logika) ---
         function renderAlbums() {
             hideAllViews();
             currentAlbumGlobal = null; currentCardGlobal = null;
@@ -234,11 +245,9 @@ const firebaseConfig = {
             gameData.forEach(album => {
                 const aName = album.names[currLang] || album.names['en'];
                 
-                // Kiszámoljuk a zöld csíkot!
                 let completedCards = 0;
                 album.cards.forEach(card => {
                     let isComplete = true;
-                    // Itt már a card.pieceCount-ot (15, 12, stb.) használjuk!
                     for(let p = 1; p <= card.pieceCount; p++) {
                         const pid = `${card.id}_piece_${p}`;
                         if(!userInventory[pid] || userInventory[pid] === 0) {
@@ -254,7 +263,6 @@ const firebaseConfig = {
                 btn.className = 'list-item';
                 btn.onclick = () => renderCards(album);
                 
-                // Új struktúra: Kép balra, név és csík jobbra
                 btn.innerHTML = `
                     <div class="album-row">
                         <img src="${album.image}" class="album-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect width=%2260%22 height=%2260%22 fill=%22%23555%22/%3E%3Ctext x=%2230%22 y=%2235%22 font-family=%22Arial%22 font-size=%2220%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
@@ -263,7 +271,7 @@ const firebaseConfig = {
                             <div class="progress-bg">
                                 <div class="progress-bar" style="width: ${progressPct}%"></div>
                             </div>
-                            <div class="progress-text">${completedCards} / ${album.cards.length}</div>
+                            <div class="progress-text">${completedCards} / ${album.cards.length} kész</div>
                         </div>
                     </div>
                 `;
@@ -272,6 +280,7 @@ const firebaseConfig = {
             viewAlbums.style.display = 'block';
         }
 
+        // --- KÁRTYÁK RENDERELÉSE (JAVÍTOTT VÉLETLEN PIPA LOGIKA) ---
         function renderCards(album) {
             hideAllViews();
             currentAlbumGlobal = album;
@@ -280,11 +289,10 @@ const firebaseConfig = {
 
             viewCards.innerHTML += `<button class="btn btn-back" onclick="renderAlbums()">${i18n[currLang].backAlbum}</button>
                                     <h3 style="text-align:left; margin-top:0;">📖 ${aName}</h3>
-                                    <p style="text-align:right; font-size:12px; color:#aaa; margin-bottom:5px;">${i18n[currLang].cardsOwnedInfo} ⬇</p>`;
+                                    <p style="text-align:right; font-size:13px; color:#ccc; margin-bottom:5px;">${i18n[currLang].cardsOwnedInfo} ⬇</p>`;
             
             album.cards.forEach(card => {
                 let isComplete = true;
-                // Itt is a card.pieceCount!
                 for(let p = 1; p <= card.pieceCount; p++) {
                     const pid = `${card.id}_piece_${p}`;
                     if(!userInventory[pid] || userInventory[pid] === 0) { isComplete = false; break; }
@@ -298,12 +306,22 @@ const firebaseConfig = {
                 const fastFillBtn = document.createElement('div');
                 fastFillBtn.className = `check-btn ${isComplete ? 'checked' : 'unchecked'}`;
                 fastFillBtn.innerHTML = '✔';
+                
+                // ITT VAN A JAVÍTÁS: Most már ki tudod venni a pipát!
                 fastFillBtn.onclick = (e) => {
                     e.stopPropagation(); 
-                    if(isComplete) return; 
-                    for(let p = 1; p <= card.pieceCount; p++) {
-                        const pid = `${card.id}_piece_${p}`;
-                        if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1;
+                    if(isComplete) {
+                        // Ha teli volt, akkor nullázzuk (kivesszük a pipát)
+                        for(let p = 1; p <= card.pieceCount; p++) {
+                            const pid = `${card.id}_piece_${p}`;
+                            userInventory[pid] = 0;
+                        }
+                    } else {
+                        // Ha üres volt, feltöltjük 1-esekkel
+                        for(let p = 1; p <= card.pieceCount; p++) {
+                            const pid = `${card.id}_piece_${p}`;
+                            if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1;
+                        }
                     }
                     renderCards(album); 
                 };
@@ -329,7 +347,6 @@ const firebaseConfig = {
             const grid = document.createElement('div');
             grid.className = 'puzzle-grid';
 
-            // Itt is a card.pieceCount!
             for(let p = 1; p <= card.pieceCount; p++) {
                 const pieceId = `${card.id}_piece_${p}`;
                 const currentQty = userInventory[pieceId] || 0; 
