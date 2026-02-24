@@ -32,6 +32,10 @@
         
         .card-item { background: rgba(224, 159, 62, 0.2); border-left: 4px solid #e09f3e; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px; padding: 15px;}
         
+        /* Kereső találatok dizájnja (ezt raktam vissza) */
+        .search-item { background: rgba(23, 162, 184, 0.2); border-left: 4px solid #17a2b8; text-align: left; padding: 15px; display: block; }
+        .search-item span { display: block; font-size: 13px; color: #aaa; font-weight: normal; margin-top: 5px; }
+
         .progress-bg { width: 100%; height: 16px; background: rgba(0,0,0,0.6); border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); position: relative;}
         .progress-bar { height: 100%; background: linear-gradient(90deg, #28a745, #34ce57); width: 0%; transition: width 0.4s ease; }
         .progress-text { font-size: 14px; color: #ddd; text-align: right; margin-top: 5px; font-weight: bold;}
@@ -208,7 +212,7 @@ const firebaseConfig = {
             };
         });
 
-        // --- GOMBOK ÉS ESEMÉNYEK BIZTONSÁGOS CSATOLÁSA ---
+        // --- GOMBOK ÉS ESEMÉNYEK ---
         document.getElementById('lang-selector').addEventListener('change', (e) => {
             window.currLang = e.target.value;
             const lang = window.currLang;
@@ -228,6 +232,51 @@ const firebaseConfig = {
         document.getElementById('btn-match-clan').addEventListener('click', () => runMatchmaker('alliance'));
         document.getElementById('btn-match-state').addEventListener('click', () => runMatchmaker('state'));
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+
+        // --- KERESŐ VISSZAÁLLÍTÁSA (EZ HIÁNYZOTT!) ---
+        document.getElementById('search-input').addEventListener('input', (e) => {
+            const queryText = e.target.value.toLowerCase().trim();
+            if (queryText === '') {
+                renderAlbums();
+                return;
+            }
+
+            hideAllViews();
+            const viewSearch = document.getElementById('view-search-results');
+            viewSearch.innerHTML = `<h3 style="text-align:left;">🔍 "${queryText}"</h3>`;
+            let foundSomething = false;
+
+            window.gameData.forEach(album => {
+                const aName = album.names[window.currLang] || album.names['en'];
+                
+                // Keresés Album névre
+                if (aName.toLowerCase().includes(queryText)) {
+                    foundSomething = true;
+                    const res = document.createElement('div');
+                    res.className = 'list-item search-item';
+                    res.innerHTML = `📖 ${aName}`;
+                    res.onclick = () => renderCards(album);
+                    viewSearch.appendChild(res);
+                }
+                
+                // Keresés Kártya névre
+                album.cards.forEach(card => {
+                    if (card.name.toLowerCase().includes(queryText)) {
+                        foundSomething = true;
+                        const res = document.createElement('div');
+                        res.className = 'list-item search-item card-item';
+                        res.innerHTML = `${card.name} <span>${aName}</span>`;
+                        res.onclick = () => renderPuzzle(album, card);
+                        viewSearch.appendChild(res);
+                    }
+                });
+            });
+
+            if (!foundSomething) {
+                viewSearch.innerHTML += `<p>${i18n[window.currLang].noMatch}</p>`;
+            }
+            viewSearch.style.display = 'block';
+        });
 
         const authScreen = document.getElementById('auth-screen');
         const profileScreen = document.getElementById('profile-setup-screen');
@@ -283,6 +332,7 @@ const firebaseConfig = {
         function renderAlbums() {
             hideAllViews();
             window.currentAlbumGlobal = null; window.currentCardGlobal = null;
+            document.getElementById('search-input').value = ''; // Kereső nullázása
             const viewAlbums = document.getElementById('view-albums');
             viewAlbums.innerHTML = '';
             
@@ -302,8 +352,6 @@ const firebaseConfig = {
 
                 const btn = document.createElement('div');
                 btn.className = 'list-item album-card';
-                
-                // Hibajavítás: A kártyára kattintás
                 btn.onclick = () => renderCards(album);
                 
                 btn.innerHTML = `
@@ -328,7 +376,6 @@ const firebaseConfig = {
             viewCards.innerHTML = '';
             const aName = album.names[window.currLang] || album.names['en'];
 
-            // GOMB JAVÍTÁS
             const backBtn = document.createElement('button');
             backBtn.className = 'btn btn-back';
             backBtn.textContent = i18n[window.currLang].backAlbum;
@@ -393,7 +440,6 @@ const firebaseConfig = {
             const topDiv = document.createElement('div');
             topDiv.style.display = "flex"; topDiv.style.justifyContent = "space-between";
             
-            // GOMB JAVÍTÁS
             const backBtn = document.createElement('button');
             backBtn.className = 'btn btn-back';
             backBtn.style.margin = "0";
@@ -452,7 +498,6 @@ const firebaseConfig = {
                 `;
                 grid.appendChild(pieceDiv);
                 
-                // Biztonságos eseménykezelő a gombokhoz
                 setTimeout(() => {
                     document.getElementById(`minus-${pieceId}`).addEventListener('click', () => {
                         updateQty(pieceId, -1);
@@ -493,7 +538,6 @@ const firebaseConfig = {
             } catch (error) { console.error(error); }
         });
 
-        // --- MATCHMAKER ---
         async function runMatchmaker(scope) {
             hideAllViews();
             const viewMatchmaker = document.getElementById('view-matchmaker');
@@ -562,7 +606,6 @@ const firebaseConfig = {
 
                 if (hasMatches) {
                     viewMatchmaker.insertAdjacentHTML('beforeend', resultsHtml);
-                    // Események kötése a gombokhoz (Csere megerősítés)
                     setTimeout(() => {
                         document.querySelectorAll('.trade-action').forEach(btn => {
                             btn.addEventListener('click', function() {
