@@ -14,12 +14,12 @@
         .btn-dark { background-color: #333; } .btn-dark:hover { background-color: #555; }
         .btn-red { background-color: #d9534f; } .btn-red:hover { background-color: #c9302c; }
         .btn-back { background-color: #8892a3; width: auto; padding: 8px 15px; margin-bottom: 15px; }
-        .btn-small { padding: 5px 10px; font-size: 12px; margin-left: 10px; width: auto; }
+        .btn-small { padding: 5px 10px; font-size: 14px; margin-left: 10px; width: auto; }
         
-        .list-item { background: #1a2a40; color: white; padding: 15px; border-radius: 8px; margin: 10px auto; cursor: pointer; font-size: 18px; font-weight: bold; width: 90%; transition: transform 0.1s; text-align: center;}
+        .list-item { background: #1a2a40; color: white; padding: 15px; border-radius: 8px; margin: 10px auto; cursor: pointer; font-size: 18px; font-weight: bold; width: 90%; transition: transform 0.1s; text-align: center; display: flex; justify-content: space-between; align-items: center;}
         .list-item:active { transform: scale(0.98); }
         .card-item { background: #e09f3e; color: white; }
-        .search-item { background: #17a2b8; color: white; text-align: left; padding: 10px 15px; }
+        .search-item { background: #17a2b8; color: white; text-align: left; padding: 10px 15px; display: block;}
         .search-item span { display: block; font-size: 12px; color: #eef2f5; font-weight: normal; }
 
         #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
@@ -30,7 +30,6 @@
         
         .puzzle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
         
-        /* Keyboard focus style for puzzle pieces */
         .puzzle-piece { border-radius: 8px; padding: 5px; background: #5a82e6; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); outline: none; transition: transform 0.1s;}
         .puzzle-piece:focus { border: 3px solid #ffc107; transform: scale(1.05); }
         
@@ -42,7 +41,7 @@
         .qty-btn.minus { background: #d9534f; color: white; }
         .qty-display { font-weight: bold; color: #333; font-size: 16px;}
         .piece-missing { background: #8892a3; }
-        .piece-surplus { background: #28a745; } /* Zöldebb, ha van felesleg */
+        .piece-surplus { background: #28a745; }
         
         #toast-msg {
             visibility: hidden; min-width: 250px; background-color: rgba(40, 167, 69, 0.95);
@@ -83,7 +82,6 @@
     </div>
 
     <div id="main-app-screen" class="container" style="display: none;">
-        
         <div id="top-bar">
             <div style="text-align: left;">
                 <h3 style="margin: 0; color:#4285F4;" id="display-name"></h3>
@@ -129,7 +127,7 @@
         import { getFirestore, doc, setDoc, getDoc, updateDoc, collection, query, where, getDocs, increment } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // MÁSOLD BE A SAJÁT KULCSODAT!
-        const firebaseConfig = {
+       const firebaseConfig = {
   apiKey: "AIzaSyDeEK5nOuvuELtGd61Q7W04uKGcJqG1L1U",
   authDomain: "tundra-album.firebaseapp.com",
   projectId: "tundra-album",
@@ -151,13 +149,13 @@
 
         // --- DICTIONARY (Fordítások) ---
         const i18n = {
-            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set all missing to 1", noMatch: "No matching players found.", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!" },
-            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", noMatch: "Nincs találat a cserepartnerekre.", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!" },
-            de: { state: "Staat", alliance: "Allianz", btnClan: "🤝 Suche im Clan", btnState: "🌍 Suche im Staat", searchPh: "🔍 Album oder Karte suchen...", btnSave: "💾 Änderungen speichern", btnLogout: "Abmelden", backAlbum: "⬅ Zurück zu Alben", backCard: "⬅ Zurück zu Karten", markDone: "✔ Alle fehlenden auf 1", noMatch: "Keine passenden Spieler gefunden.", givesYou: "Kann dir geben:", asksFrom: "Fragt von dir:", traded: "Gehandelt!" },
-            fr: { state: "État", alliance: "Alliance", btnClan: "🤝 Chercher dans le Clan", btnState: "🌍 Chercher dans l'État", searchPh: "🔍 Chercher un album ou une carte...", btnSave: "💾 Sauvegarder", btnLogout: "Déconnexion", backAlbum: "⬅ Retour aux Albums", backCard: "⬅ Retour aux Cartes", markDone: "✔ Marquer manquants à 1", noMatch: "Aucun joueur correspondant trouvé.", givesYou: "Peut vous donner:", asksFrom: "Vous demande:", traded: "Échangé!" },
-            tr: { state: "Eyalet", alliance: "İttifak", btnClan: "🤝 Klanda Ara", btnState: "🌍 Eyalette Ara", searchPh: "🔍 Albüm veya kart ara...", btnSave: "💾 Değişiklikleri Kaydet", btnLogout: "Çıkış Yap", backAlbum: "⬅ Albümlere Dön", backCard: "⬅ Kartlara Dön", markDone: "✔ Eksikleri 1 yap", noMatch: "Eşleşen oyuncu bulunamadı.", givesYou: "Sana verebilir:", asksFrom: "Senden istiyor:", traded: "Takas edildi!" },
-            ru: { state: "Штат", alliance: "Альянс", btnClan: "🤝 Поиск в клане", btnState: "🌍 Поиск в штате", searchPh: "🔍 Поиск альбома или карты...", btnSave: "💾 Сохранить изменения", btnLogout: "Выйти", backAlbum: "⬅ Назад к альбомам", backCard: "⬅ Назад к картам", markDone: "✔ Установить недостающие на 1", noMatch: "Подходящих игроков не найдено.", givesYou: "Может дать вам:", asksFrom: "Просит у вас:", traded: "Обменялись!" },
-            ar: { state: "حالة", alliance: "تحالف", btnClan: "🤝 البحث في العشيرة", btnState: "🌍 البحث في الولاية", searchPh: "🔍 البحث عن ألبوم أو بطاقة...", btnSave: "💾 حفظ التغييرات", btnLogout: "تسجيل خروج", backAlbum: "⬅ العودة للألبومات", backCard: "⬅ العودة للبطاقات", markDone: "✔ تعيين المفقود إلى 1", noMatch: "لم يتم العثور على لاعبين.", givesYou: "يمكن أن يعطيك:", asksFrom: "يطلب منك:", traded: "تم التبادل!" }
+            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set all missing to 1", noMatch: "No matching players found.", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", fastFillAlert: "Card filled!" },
+            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", noMatch: "Nincs találat a cserepartnerekre.", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", fastFillAlert: "Kártya kitöltve!" },
+            de: { state: "Staat", alliance: "Allianz", btnClan: "🤝 Suche im Clan", btnState: "🌍 Suche im Staat", searchPh: "🔍 Album oder Karte suchen...", btnSave: "💾 Änderungen speichern", btnLogout: "Abmelden", backAlbum: "⬅ Zurück zu Alben", backCard: "⬅ Zurück zu Karten", markDone: "✔ Alle fehlenden auf 1", noMatch: "Keine passenden Spieler gefunden.", givesYou: "Kann dir geben:", asksFrom: "Fragt von dir:", traded: "Gehandelt!", fastFillAlert: "Karte gefüllt!" },
+            fr: { state: "État", alliance: "Alliance", btnClan: "🤝 Chercher dans le Clan", btnState: "🌍 Chercher dans l'État", searchPh: "🔍 Chercher un album ou une carte...", btnSave: "💾 Sauvegarder", btnLogout: "Déconnexion", backAlbum: "⬅ Retour aux Albums", backCard: "⬅ Retour aux Cartes", markDone: "✔ Marquer manquants à 1", noMatch: "Aucun joueur correspondant trouvé.", givesYou: "Peut vous donner:", asksFrom: "Vous demande:", traded: "Échangé!", fastFillAlert: "Carte remplie!" },
+            tr: { state: "Eyalet", alliance: "İttifak", btnClan: "🤝 Klanda Ara", btnState: "🌍 Eyalette Ara", searchPh: "🔍 Albüm veya kart ara...", btnSave: "💾 Kaydet", btnLogout: "Çıkış Yap", backAlbum: "⬅ Albümlere Dön", backCard: "⬅ Kartlara Dön", markDone: "✔ Eksikleri 1 yap", noMatch: "Eşleşen oyuncu bulunamadı.", givesYou: "Sana verebilir:", asksFrom: "Senden istiyor:", traded: "Takas edildi!", fastFillAlert: "Kart dolduruldu!" },
+            ru: { state: "Штат", alliance: "Альянс", btnClan: "🤝 Поиск в клане", btnState: "🌍 Поиск в штате", searchPh: "🔍 Поиск альбома или карты...", btnSave: "💾 Сохранить", btnLogout: "Выйти", backAlbum: "⬅ Назад к альбомам", backCard: "⬅ Назад к картам", markDone: "✔ Установить недостающие на 1", noMatch: "Игроков не найдено.", givesYou: "Может дать вам:", asksFrom: "Просит у вас:", traded: "Обменялись!", fastFillAlert: "Карта заполнена!" },
+            ar: { state: "حالة", alliance: "تحالف", btnClan: "🤝 البحث في العشيرة", btnState: "🌍 البحث في الولاية", searchPh: "🔍 البحث عن ألبوم أو بطاقة...", btnSave: "💾 حفظ التغييرات", btnLogout: "تسجيل خروج", backAlbum: "⬅ العودة للألبومات", backCard: "⬅ العودة للبطاقات", markDone: "✔ تعيين المفقود إلى 1", noMatch: "لم يتم العثور على لاعبين.", givesYou: "يمكن أن يعطيك:", asksFrom: "يطلب منك:", traded: "تم التبادل!", fastFillAlert: "تم ملء البطاقة!" }
         };
         let currLang = 'en';
 
@@ -171,17 +169,37 @@
             document.querySelector('.t-btn-save').textContent = i18n[lang].btnSave;
             document.querySelector('.t-btn-logout').textContent = i18n[lang].btnLogout;
             
-            // Re-render current view to update buttons
+            // Dinamikus újra-rajzolás nyelvváltáskor!
+            if(document.getElementById('view-albums').style.display === 'block') renderAlbums();
             if(document.getElementById('view-cards').style.display === 'block') renderCards(currentAlbumGlobal);
             if(document.getElementById('view-puzzle').style.display === 'block') renderPuzzle(currentAlbumGlobal, currentCardGlobal);
         };
 
-        // Adatbázis generálás
-        const albumNames = [ "Rekindled Flames", "Explore the World", "Daybreak Island", "Tundra Alliance", "Battlefield Epic", "Spectacular Adventures", "Divine Weapons", "Song of Heroes", "The Labyrinth", "Nature’s Strength", "Crystalline Mysteries", "Ballad of Wind and Cold", "Infernal Power", "Prerogative of the Flame", "Frostdragon Empire", "Kings of Combat" ];
-        const gameData = albumNames.map((name, aIdx) => {
+        // --- ÚJ: DINAMIKUS ALBUM ADATBÁZIS TÖBB NYELVEN ---
+        const albumTranslations = [
+            { en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok", fr: "Flammes ravivées", tr: "Yeniden Alevlenen", ru: "Вновь зажженное", ar: "نيران مشتعلة" },
+            { en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot", fr: "Explorer le monde", tr: "Dünyayı Keşfet", ru: "Исследуй мир", ar: "استكشف العالم" },
+            { en: "Daybreak Island", de: "Tagesanbruch-Insel", hu: "Hajnal Sziget", fr: "Île de l'Aube", tr: "Şafak Adası", ru: "Остров Рассвета", ar: "جزيرة الفجر" },
+            { en: "Tundra Alliance", de: "Tundra-Allianz", hu: "Tundra Szövetség", fr: "Alliance de la Toundra", tr: "Tundra İttifakı", ru: "Альянс Тундры", ar: "تحالف التندرا" },
+            { en: "Battlefield Epic", de: "Schlachtfeld-Epos", hu: "Csatatéri Eposz", fr: "Épopée du champ de bataille", tr: "Savaş Alanı Destanı", ru: "Эпос поля боя", ar: "ملحمة ساحة المعركة" },
+            { en: "Spectacular Adventures", de: "Spektakuläre Abenteuer", hu: "Különleges Kalandok", fr: "Aventures spectaculaires", tr: "Muhteşem Maceralar", ru: "Захватывающие приключения", ar: "مغامرات مذهلة" },
+            { en: "Divine Weapons", de: "Göttliche Waffen", hu: "Isteni Fegyverek", fr: "Armes divines", tr: "İlahi Silahlar", ru: "Божественное оружие", ar: "أسلحة إلهية" },
+            { en: "Song of Heroes", de: "Lied der Helden", hu: "Hősök Éneke", fr: "Chant des Héros", tr: "Kahramanların Şarkısı", ru: "Песнь Героев", ar: "أغنية الأبطال" },
+            { en: "The Labyrinth", de: "Das Labyrinth", hu: "A Labirintus", fr: "Le Labyrinthe", tr: "Labirent", ru: "Лабиринт", ar: "المتاهة" },
+            { en: "Nature’s Strength", de: "Kraft der Natur", hu: "A Természet Ereje", fr: "Force de la Nature", tr: "Doğanın Gücü", ru: "Сила природы", ar: "قوة الطبيعة" },
+            { en: "Crystalline Mysteries", de: "Kristalline Geheimnisse", hu: "Kristályos Rejtélyek", fr: "Mystères Cristallins", tr: "Kristal Gizemler", ru: "Кристальные тайны", ar: "أسرار بلورية" },
+            { en: "Ballad of Wind and Cold", de: "Ballade von Wind und Kälte", hu: "A Szél és Hideg Balladája", fr: "Ballade du Vent", tr: "Rüzgarın Baladı", ru: "Баллада о Ветре", ar: "أغنية الريح" },
+            { en: "Infernal Power", de: "Höllenmacht", hu: "Pokoli Erő", fr: "Puissance Infernale", tr: "Cehennem Gücü", ru: "Адская сила", ar: "قوة جهنمية" },
+            { en: "Prerogative of the Flame", de: "Vorrecht der Flamme", hu: "A Láng Előjoga", fr: "Prérogative de la Flamme", tr: "Alevin Ayrıcalığı", ru: "Прерогатива Пламени", ar: "امتياز اللهب" },
+            { en: "Frostdragon Empire", de: "Frostdrachen-Imperium", hu: "Fagysárkány Birodalom", fr: "Empire du Dragon de Givre", tr: "Buz Ejderhası İmparatorluğu", ru: "Империя Ледяного Дракона", ar: "إمبراطورية تنين الصقيع" },
+            { en: "Kings of Combat", de: "Könige des Kampfes", hu: "A Harc Királyai", fr: "Rois du Combat", tr: "Savaş Kralları", ru: "Короли Битвы", ar: "ملوك القتال" }
+        ];
+
+        const gameData = albumTranslations.map((namesObj, aIdx) => {
             return {
-                id: `album_${aIdx}`, name: name,
-                cards: Array.from({length: 9}, (_, cIdx) => ({ id: `album_${aIdx}_card_${cIdx+1}`, name: `Card ${cIdx+1}` }))
+                id: `album_${aIdx}`,
+                names: namesObj,
+                cards: Array.from({length: 9}, (_, cIdx) => ({ id: `album_${aIdx}_card_${cIdx+1}`, name: `Card ${cIdx+1}` })) // A kártyák nevét később ide lehet tölteni
             };
         });
 
@@ -254,46 +272,76 @@
             searchInput.value = ''; 
             viewAlbums.innerHTML = '';
             gameData.forEach(album => {
+                const aName = album.names[currLang] || album.names['en']; // Dinamikus név
+                
                 const btn = document.createElement('div');
                 btn.className = 'list-item';
-                btn.textContent = `📖 ${album.name}`;
+                btn.textContent = `📖 ${aName}`;
                 btn.onclick = () => renderCards(album);
                 viewAlbums.appendChild(btn);
             });
             viewAlbums.style.display = 'block';
         }
 
+        // Kártyák listája - ÚJ: Gyorskitöltő gomb a kártyák mellé!
         function renderCards(album) {
             hideAllViews();
             currentAlbumGlobal = album;
             searchInput.value = '';
             viewCards.innerHTML = '';
             
+            const aName = album.names[currLang] || album.names['en'];
+
             const backBtn = document.createElement('button');
             backBtn.className = 'btn btn-back';
             backBtn.textContent = i18n[currLang].backAlbum;
             backBtn.onclick = () => renderAlbums();
             
             viewCards.appendChild(backBtn);
-            viewCards.insertAdjacentHTML('beforeend', `<h3>📖 ${album.name}</h3>`);
+            viewCards.insertAdjacentHTML('beforeend', `<h3>📖 ${aName}</h3>`);
             
             album.cards.forEach(card => {
-                const btn = document.createElement('div');
-                btn.className = 'list-item card-item';
-                btn.textContent = card.name;
-                btn.onclick = () => renderPuzzle(album, card);
-                viewCards.appendChild(btn);
+                const row = document.createElement('div');
+                row.className = 'list-item card-item';
+                row.style.display = "flex"; row.style.justifyContent = "space-between"; row.style.alignItems = "center";
+                row.style.padding = "10px 15px";
+                
+                // Bal oldal: Kártya neve (Kattintva belép)
+                const nameSpan = document.createElement('span');
+                nameSpan.textContent = card.name;
+                nameSpan.style.flexGrow = "1"; nameSpan.style.textAlign = "left";
+                nameSpan.onclick = () => renderPuzzle(album, card);
+                
+                // Jobb oldal: Gyorskitöltő gomb
+                const fastFillBtn = document.createElement('button');
+                fastFillBtn.className = 'btn btn-green btn-small';
+                fastFillBtn.textContent = '✔';
+                fastFillBtn.title = i18n[currLang].markDone;
+                fastFillBtn.onclick = (e) => {
+                    e.stopPropagation(); // Ne nyissa meg a kártyát, csak töltsön
+                    for(let p = 1; p <= 15; p++) {
+                        const pid = `${card.id}_piece_${p}`;
+                        if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1;
+                    }
+                    alert(i18n[currLang].fastFillAlert);
+                };
+                
+                row.appendChild(nameSpan);
+                row.appendChild(fastFillBtn);
+                viewCards.appendChild(row);
             });
             viewCards.style.display = 'block';
         }
 
-        // --- PUZZLE NÉZET + GYORSÍTÓ GOMB ---
+        // --- PUZZLE NÉZET ---
         window.renderPuzzle = function(album, card) {
             hideAllViews();
             currentAlbumGlobal = album; currentCardGlobal = card;
             searchInput.value = '';
             viewPuzzle.innerHTML = '';
             
+            const aName = album.names[currLang] || album.names['en'];
+
             const topControls = document.createElement('div');
             topControls.style.display = "flex"; topControls.style.justifyContent = "space-between"; topControls.style.alignItems = "center";
             
@@ -303,7 +351,6 @@
             backBtn.textContent = i18n[currLang].backCard;
             backBtn.onclick = () => renderCards(album);
             
-            // GYORSÍTÓ GOMB (Minden nullásat 1-re állít)
             const markDoneBtn = document.createElement('button');
             markDoneBtn.className = 'btn btn-green';
             markDoneBtn.style.width = "auto"; markDoneBtn.style.padding = "8px 15px"; markDoneBtn.style.margin = "0";
@@ -312,17 +359,17 @@
                 for(let p = 1; p <= 15; p++) {
                     const pid = `${card.id}_piece_${p}`;
                     if(!userInventory[pid] || userInventory[pid] === 0) {
-                        userInventory[pid] = 1; // Csak a hiányzót módosítja!
+                        userInventory[pid] = 1; 
                     }
                 }
-                renderPuzzle(album, card); // Újrarajzolja a rácsot
+                renderPuzzle(album, card); 
             };
 
             topControls.appendChild(backBtn);
             topControls.appendChild(markDoneBtn);
             
             viewPuzzle.appendChild(topControls);
-            viewPuzzle.insertAdjacentHTML('beforeend', `<h3><small>${album.name}</small><br>${card.name}</h3>`);
+            viewPuzzle.insertAdjacentHTML('beforeend', `<h3><small>${aName}</small><br>${card.name}</h3>`);
             
             const grid = document.createElement('div');
             grid.className = 'puzzle-grid';
@@ -331,7 +378,6 @@
                 const pieceId = `${card.id}_piece_${p}`;
                 const currentQty = userInventory[pieceId] || 0; 
                 
-                // VIZUÁLIS LOGIKA: 0, ✔, vagy +X
                 let displayQty = currentQty;
                 let bgClass = '';
                 if (currentQty === 0) { displayQty = "0"; bgClass = 'piece-missing'; }
@@ -341,9 +387,8 @@
                 const pieceDiv = document.createElement('div');
                 pieceDiv.className = `puzzle-piece ${bgClass}`;
                 pieceDiv.id = `box-${pieceId}`;
-                pieceDiv.tabIndex = 0; // BILLENTYŰZET FÓKUSZ
+                pieceDiv.tabIndex = 0; 
                 
-                // BILLENTYŰZET NAVIGÁCIÓ (Fel, Le, Balra, Jobbra)
                 pieceDiv.onkeydown = (e) => {
                     if (e.key === 'ArrowUp') { updateQty(pieceId, 1); e.preventDefault(); }
                     if (e.key === 'ArrowDown') { updateQty(pieceId, -1); e.preventDefault(); }
@@ -380,11 +425,12 @@
             let foundSomething = false;
 
             gameData.forEach(album => {
-                if(album.name.toLowerCase().includes(query)) {
+                const aName = album.names[currLang] || album.names['en'];
+                if(aName.toLowerCase().includes(query)) {
                     foundSomething = true;
                     const res = document.createElement('div');
                     res.className = 'list-item search-item';
-                    res.innerHTML = `📖 ${album.name}`;
+                    res.innerHTML = `📖 ${aName}`;
                     res.onclick = () => renderCards(album);
                     viewSearch.appendChild(res);
                 }
@@ -393,7 +439,7 @@
                         foundSomething = true;
                         const res = document.createElement('div');
                         res.className = 'list-item search-item card-item';
-                        res.innerHTML = `${card.name} <span>${album.name}</span>`;
+                        res.innerHTML = `${card.name} <span>${aName}</span>`;
                         res.onclick = () => renderPuzzle(album, card);
                         viewSearch.appendChild(res);
                     }
@@ -404,7 +450,6 @@
             viewSearch.style.display = 'block';
         });
 
-        // Darabszám módosító (vizuális visszajelzéssel)
         window.updateQty = function(pieceId, change) {
             let currentQty = userInventory[pieceId] || 0;
             currentQty += change;
@@ -434,7 +479,7 @@
             const toast = document.getElementById('toast-msg');
             try {
                 await updateDoc(doc(db, "jatekosok", currentUserUid), { inventory: userInventory });
-                toast.textContent = "✅ Saved!";
+                toast.textContent = "✅ " + (currLang === 'hu' ? "Sikeres mentés!" : "Saved!");
                 toast.style.backgroundColor = "rgba(40, 167, 69, 0.95)";
                 toast.classList.add("show");
                 setTimeout(() => toast.classList.remove("show"), 2000);
@@ -483,12 +528,13 @@
                     let takeFromMe = []; 
 
                     gameData.forEach(album => {
+                        const aName = album.names[currLang] || album.names['en'];
                         album.cards.forEach(card => {
                             for(let p = 1; p <= 15; p++) {
                                 const pieceId = `${card.id}_piece_${p}`;
                                 const myQty = userInventory[pieceId] || 0;
                                 const otherQty = otherInv[pieceId] || 0;
-                                const pieceName = `<b>${album.name}</b><br>${card.name} / ${p}.`;
+                                const pieceName = `<b>${aName}</b><br>${card.name} / ${p}.`;
 
                                 if (myQty === 0 && otherQty >= 2) {
                                     giveToMe.push(`
