@@ -5,67 +5,127 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Whiteout Survival - Tundra Trade</title>
     <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 0; padding: 20px; background-color: #f4f7f6; }
-        .container { background: white; max-width: 800px; margin: auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        input, select { width: 90%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px;}
-        .btn { padding: 10px 20px; margin: 5px 0; font-size: 16px; cursor: pointer; color: white; border: none; border-radius: 5px; font-weight: bold; width: 90%; }
-        .btn-blue { background-color: #4285F4; } .btn-blue:hover { background-color: #357ae8; }
-        .btn-green { background-color: #28a745; } .btn-green:hover { background-color: #218838; }
-        .btn-dark { background-color: #333; } .btn-dark:hover { background-color: #555; }
-        .btn-red { background-color: #d9534f; } .btn-red:hover { background-color: #c9302c; }
-        .btn-back { background-color: #8892a3; width: auto; padding: 8px 15px; margin-bottom: 15px; }
-        .btn-small { padding: 5px 10px; font-size: 14px; margin-left: 10px; width: auto; }
+        /* --- MODERN, JEGES "WHITEOUT" TÉMA --- */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            text-align: center; margin: 0; padding: 20px; 
+            /* Fagyos, sötétkék háttér átmenet */
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364); 
+            color: #eef2f5;
+            min-height: 100vh;
+        }
         
-        .list-item { background: #1a2a40; color: white; padding: 15px; border-radius: 8px; margin: 10px auto; cursor: pointer; font-size: 18px; font-weight: bold; width: 90%; transition: transform 0.1s; text-align: center; display: flex; justify-content: space-between; align-items: center;}
-        .list-item:active { transform: scale(0.98); }
-        .card-item { background: #e09f3e; color: white; }
-        .search-item { background: #17a2b8; color: white; text-align: left; padding: 10px 15px; display: block;}
-        .search-item span { display: block; font-size: 12px; color: #eef2f5; font-weight: normal; }
+        /* Üveghatású (Glassmorphism) konténer */
+        .container { 
+            background: rgba(25, 35, 50, 0.6); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px; margin: auto; padding: 30px; 
+            border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); 
+        }
 
-        #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
-        #lang-selector { width: auto; padding: 5px; margin: 0; font-size: 14px;}
+        h2, h3 { color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.5); }
+        
+        /* Form elemek */
+        input, select { 
+            width: 90%; padding: 12px; margin: 10px 0; 
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid transparent; border-radius: 8px; 
+            box-sizing: border-box; font-size: 16px; color: #333;
+            transition: all 0.3s ease;
+        }
+        input:focus { border-color: #4285F4; outline: none; box-shadow: 0 0 10px rgba(66, 133, 244, 0.5); }
+        
+        /* Gombok */
+        .btn { 
+            padding: 12px 20px; margin: 5px 0; font-size: 16px; cursor: pointer; 
+            color: white; border: none; border-radius: 8px; font-weight: bold; width: 90%; 
+            transition: transform 0.1s, filter 0.2s;
+            text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:hover { filter: brightness(1.1); }
+        
+        .btn-blue { background: linear-gradient(90deg, #4285F4, #357ae8); } 
+        .btn-green { background: linear-gradient(90deg, #28a745, #218838); } 
+        .btn-dark { background: linear-gradient(90deg, #333, #555); } 
+        .btn-red { background: linear-gradient(90deg, #d9534f, #c9302c); } 
+        .btn-back { background-color: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); width: auto; padding: 8px 15px; margin-bottom: 15px; text-transform: none;}
+        .btn-small { padding: 6px 12px; font-size: 14px; margin-left: 10px; width: auto; box-shadow: none;}
+        
+        /* Listák és Kártyák */
+        .list-item { 
+            background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255,255,255,0.05);
+            color: white; padding: 15px; border-radius: 10px; margin: 10px auto; 
+            cursor: pointer; font-size: 18px; font-weight: bold; width: 90%; 
+            transition: transform 0.1s, background 0.2s; text-align: center; 
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .list-item:hover { background: rgba(0, 0, 0, 0.6); }
+        .list-item:active { transform: scale(0.98); }
+        .card-item { background: rgba(224, 159, 62, 0.2); border-left: 4px solid #e09f3e; }
+        .card-item:hover { background: rgba(224, 159, 62, 0.3); }
+        
+        .search-item { background: rgba(23, 162, 184, 0.2); border-left: 4px solid #17a2b8; text-align: left; padding: 10px 15px; display: block;}
+        .search-item span { display: block; font-size: 12px; color: #aaa; font-weight: normal; margin-top: 5px;}
+
+        /* Felső sáv */
+        #top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);}
+        #lang-selector { width: auto; padding: 8px; margin: 0; font-size: 14px; background: rgba(255,255,255,0.9); color: #000; border-radius: 5px;}
         
         .action-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;}
-        #search-bar { position: sticky; top: 0; background: white; padding: 10px 0; z-index: 10; border-bottom: 2px solid #eee; margin-bottom: 15px;}
+        #search-bar { position: sticky; top: 0; background: rgba(25, 35, 50, 0.95); padding: 10px 0; z-index: 10; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px);}
         
-        .puzzle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px; margin-top: 10px; }
+        /* Puzzle Rács */
+        .puzzle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 15px; }
         
-        .puzzle-piece { border-radius: 8px; padding: 5px; background: #5a82e6; display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 100px; box-shadow: 0 2px 4px rgba(0,0,0,0.2); outline: none; transition: transform 0.1s;}
-        .puzzle-piece:focus { border: 3px solid #ffc107; transform: scale(1.05); }
-        
-        .piece-shape { width: 40px; height: 40px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 16px; margin-bottom: 5px;}
-        
-        .controls { display: flex; align-items: center; justify-content: space-between; width: 100%; background: white; border-radius: 5px; overflow: hidden; }
-        .qty-btn { background: #ddd; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 14px; }
-        .qty-btn.plus { background: #6bc85f; color: white; }
-        .qty-btn.minus { background: #d9534f; color: white; }
-        .qty-display { font-weight: bold; color: #333; font-size: 16px;}
-        .piece-missing { background: #8892a3; }
-        .piece-surplus { background: #28a745; }
-        
-        /* ÚJ: Egyedi jelölőnégyzet stílus a kártyák mellé */
-        .check-btn {
-            width: 32px; height: 32px; border-radius: 5px; border: 2px solid #fff;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 18px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        .puzzle-piece { 
+            border-radius: 10px; padding: 8px; 
+            background: linear-gradient(135deg, #4b6cb7, #182848); 
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between; 
+            min-height: 110px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); outline: none; transition: transform 0.1s;
         }
-        .check-btn.checked { background-color: #28a745; border-color: #28a745; color: white; }
-        .check-btn.unchecked { background-color: rgba(255,255,255,0.3); color: transparent; }
-        .check-btn.unchecked:hover { background-color: rgba(255,255,255,0.5); }
+        .puzzle-piece:focus { border: 2px solid #ffc107; transform: scale(1.05); }
+        
+        .piece-shape { width: 45px; height: 45px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);}
+        
+        .controls { display: flex; align-items: center; justify-content: space-between; width: 100%; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; padding: 2px;}
+        .qty-btn { background: transparent; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 16px; color: white; transition: background 0.2s;}
+        .qty-btn:hover { background: rgba(255,255,255,0.2); }
+        .qty-display { font-weight: bold; color: #fff; font-size: 16px;}
+        
+        .piece-missing { background: linear-gradient(135deg, #4a5568, #2d3748); opacity: 0.8;}
+        .piece-surplus { background: linear-gradient(135deg, #2b5876, #4e4376); }
+        
+        /* Jelölőnégyzet */
+        .check-btn {
+            width: 32px; height: 32px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.2);
+        }
+        .check-btn.checked { background-color: #28a745; border-color: #28a745; color: white; box-shadow: 0 0 10px rgba(40,167,69,0.5);}
+        .check-btn.unchecked { color: transparent; }
+        .check-btn.unchecked:hover { background-color: rgba(255,255,255,0.1); border-color: white;}
 
         #toast-msg {
             visibility: hidden; min-width: 250px; background-color: rgba(40, 167, 69, 0.95);
             color: #fff; text-align: center; border-radius: 8px; padding: 15px;
             position: fixed; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%);
-            font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5);
             opacity: 0; transition: opacity 0.3s, visibility 0.3s; pointer-events: none;
+            backdrop-filter: blur(5px);
         }
         #toast-msg.show { visibility: visible; opacity: 1; }
         
-        .match-card { background: #2a3b50; color: white; padding: 15px; border-radius: 8px; margin: 10px auto; width: 90%; text-align: left; box-shadow: 0 2px 5px rgba(0,0,0,0.2);}
-        .match-card h4 { margin: 0 0 10px 0; color: #ffd700; border-bottom: 1px solid #4a5b70; padding-bottom: 5px;}
-        .match-detail { margin: 5px 0; font-size: 14px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 5px;}
-        .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 5px;}
+        /* Kereső találatok */
+        .match-card { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); color: white; padding: 15px; border-radius: 10px; margin: 15px auto; width: 90%; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.2);}
+        .match-card h4 { margin: 0 0 10px 0; color: #e09f3e; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; font-size: 20px;}
+        .match-detail { margin: 8px 0; font-size: 14px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;}
+        .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
+        
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;}
     </style>
 </head>
 <body>
@@ -73,29 +133,41 @@
     <div id="toast-msg">✅ Saved!</div>
 
     <div id="auth-screen" class="container">
-        <h2>Login or Register</h2>
+        <div style="margin-bottom: 30px;">
+            <h1 style="color: #e09f3e; font-size: 32px; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 2px;">Whiteout Survival</h1>
+            <h2 style="color: #fff; margin-top: 0; font-weight: normal; font-size: 22px;">❄️ Tundra Trade ❄️</h2>
+            <p style="color: #aaa; font-style: italic;">The Ultimate Puzzle Exchange Tool</p>
+        </div>
+        
         <input type="email" id="email-input" placeholder="Email address">
         <input type="password" id="password-input" placeholder="Password">
-        <div id="auth-error" style="color:red; margin-bottom:10px;"></div>
+        <div id="auth-error" style="color:#ff6b6b; margin-bottom:10px; font-weight:bold;"></div>
+        
         <button id="email-login-btn" class="btn btn-green">Login with Email</button>
         <button id="email-register-btn" class="btn btn-dark">Register new account</button>
-        <hr><button id="google-login-btn" class="btn btn-blue">Login with Google</button>
+        
+        <div style="margin: 20px 0; color: #888; display: flex; align-items: center; justify-content: center;">
+            <hr style="flex-grow: 1; margin: 0 15px;"><span style="font-size: 14px;">OR</span><hr style="flex-grow: 1; margin: 0 15px;">
+        </div>
+        
+        <button id="google-login-btn" class="btn btn-blue">Login with Google</button>
     </div>
 
     <div id="profile-setup-screen" class="container" style="display: none;">
-        <h2>Setup your profile</h2>
+        <h2 style="color: #e09f3e;">Setup your profile</h2>
+        <p style="color: #ccc;">Enter your in-game details to find trading partners.</p>
         <input type="text" id="player-name" placeholder="Player Name (any characters)">
         <input type="number" id="server-number" placeholder="State/Server (exactly 4 digits, e.g., 2530)">
         <input type="text" id="alliance-name" placeholder="Alliance Tag (exactly 3 chars, e.g., ABC)">
-        <div id="profile-error" style="color:red; margin-bottom:10px;"></div>
+        <div id="profile-error" style="color:#ff6b6b; margin-bottom:10px; font-weight:bold;"></div>
         <button id="save-profile-btn" class="btn btn-green">Save & Continue</button>
     </div>
 
     <div id="main-app-screen" class="container" style="display: none;">
         <div id="top-bar">
             <div style="text-align: left;">
-                <h3 style="margin: 0; color:#4285F4;" id="display-name"></h3>
-                <small><span class="t-state">State</span>: <b id="display-server"></b> | <span class="t-alliance">Alliance</span>: <b id="display-alliance"></b></small>
+                <h3 style="margin: 0; color:#e09f3e;" id="display-name"></h3>
+                <small style="color: #ccc;"><span class="t-state">State</span>: <b id="display-server" style="color:#fff;"></b> | <span class="t-alliance">Alliance</span>: <b id="display-alliance" style="color:#fff;"></b></small>
             </div>
             <div>
                 <select id="lang-selector" onchange="changeLanguage(this.value)">
@@ -111,7 +183,7 @@
         </div>
         
         <div class="action-buttons">
-            <button onclick="runMatchmaker('alliance')" class="btn btn-dark t-btn-clan" style="width: 48%;">🤝 Search in Clan</button>
+            <button onclick="runMatchmaker('alliance')" class="btn btn-blue t-btn-clan" style="width: 48%; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);">🤝 Search in Clan</button>
             <button onclick="runMatchmaker('state')" class="btn btn-dark t-btn-state" style="width: 48%;">🌍 Search in State</button>
         </div>
 
@@ -125,10 +197,10 @@
         <div id="view-search-results" style="display: none;"></div>
         <div id="view-matchmaker" style="display: none;"></div>
 
-        <br><hr><br>
-        <button id="save-inventory-btn" class="btn btn-green t-btn-save" style="font-size: 18px; padding: 15px;">💾 Save Changes</button>
+        <br><hr>
+        <button id="save-inventory-btn" class="btn btn-green t-btn-save" style="font-size: 18px; padding: 15px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.4);">💾 Save Changes</button>
         <br><br>
-        <button id="logout-btn" class="btn btn-red t-btn-logout" style="width: auto;">Logout</button>
+        <button id="logout-btn" class="btn btn-back t-btn-logout" style="width: auto; background: transparent;">Logout</button>
     </div>
 
     <script type="module">
@@ -146,7 +218,6 @@ const firebaseConfig = {
   appId: "1:469371801375:web:71007b232a98fe8bdbea2a",
   measurementId: "G-2LQT9X23X5"
 };
-
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -157,7 +228,7 @@ const firebaseConfig = {
         let currentAlbumGlobal = null;
         let currentCardGlobal = null;
 
-        // --- DICTIONARY (Fordítások kibővítve) ---
+        // DICTIONARY
         const i18n = {
             en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set missing to 1", noMatch: "No matching players found.", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", fastFillAlert: "Card marked as complete!", cardsOwnedInfo: "These cards are complete" },
             hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", noMatch: "Nincs találat a cserepartnerekre.", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", fastFillAlert: "Kártya kitöltve!", cardsOwnedInfo: "Ezek a kártyák megvannak" },
@@ -289,7 +360,6 @@ const firebaseConfig = {
             viewAlbums.style.display = 'block';
         }
 
-        // --- ÚJ KÁRTYA NÉZET: Dinamikus, állapottól függő Checkboxokkal ---
         function renderCards(album) {
             hideAllViews();
             currentAlbumGlobal = album;
@@ -298,7 +368,6 @@ const firebaseConfig = {
             
             const aName = album.names[currLang] || album.names['en'];
 
-            // Fejléc rész
             const headerRow = document.createElement('div');
             headerRow.style.display = "flex"; headerRow.style.justifyContent = "space-between"; headerRow.style.alignItems = "flex-end";
             headerRow.style.marginBottom = "15px";
@@ -317,9 +386,8 @@ const firebaseConfig = {
             leftSide.appendChild(backBtn);
             leftSide.appendChild(title);
 
-            // Magyarázó szöveg a jobb oldalon (Ezek a kártyák megvannak ⬇)
             const infoText = document.createElement('small');
-            infoText.style.color = "#8892a3"; infoText.style.fontWeight = "bold"; infoText.style.textAlign = "right";
+            infoText.style.color = "#ccc"; infoText.style.textAlign = "right";
             infoText.innerHTML = `${i18n[currLang].cardsOwnedInfo} <br><span style="font-size: 16px;">⬇</span>`;
 
             headerRow.appendChild(leftSide);
@@ -327,7 +395,6 @@ const firebaseConfig = {
             viewCards.appendChild(headerRow);
             
             album.cards.forEach(card => {
-                // Megnézzük, tele van-e a kártya az adatbázis szerint
                 let isComplete = true;
                 for(let p = 1; p <= 15; p++) {
                     const pid = `${card.id}_piece_${p}`;
@@ -338,7 +405,6 @@ const firebaseConfig = {
 
                 const row = document.createElement('div');
                 row.className = 'list-item card-item';
-                row.style.display = "flex"; row.style.justifyContent = "space-between"; row.style.alignItems = "center";
                 row.style.padding = "10px 15px";
                 
                 const nameSpan = document.createElement('span');
@@ -346,17 +412,15 @@ const firebaseConfig = {
                 nameSpan.style.flexGrow = "1"; nameSpan.style.textAlign = "left";
                 nameSpan.onclick = () => renderPuzzle(album, card);
                 
-                // Dinamikus Gomb (Szürke üres vs Zöld Pipa)
                 const fastFillBtn = document.createElement('div');
                 fastFillBtn.className = `check-btn ${isComplete ? 'checked' : 'unchecked'}`;
-                fastFillBtn.textContent = '✔'; // Csak CSS-ből rejtjük el a pipát, ha nincs bejelölve
+                fastFillBtn.textContent = '✔';
                 fastFillBtn.title = i18n[currLang].markDone;
                 
                 fastFillBtn.onclick = (e) => {
                     e.stopPropagation(); 
-                    if(isComplete) return; // Ha már tele van, nem csinál semmit a kattintásra
+                    if(isComplete) return; 
 
-                    // Felöltjük az üres helyeket 1-gyel
                     for(let p = 1; p <= 15; p++) {
                         const pid = `${card.id}_piece_${p}`;
                         if(!userInventory[pid] || userInventory[pid] === 0) userInventory[pid] = 1;
@@ -367,7 +431,7 @@ const firebaseConfig = {
                     toast.classList.add("show");
                     setTimeout(() => toast.classList.remove("show"), 1500);
                     
-                    renderCards(album); // Frissítjük a nézetet, hogy zöld legyen a gomb!
+                    renderCards(album); 
                 };
                 
                 row.appendChild(nameSpan);
@@ -410,7 +474,7 @@ const firebaseConfig = {
             topControls.appendChild(markDoneBtn);
             
             viewPuzzle.appendChild(topControls);
-            viewPuzzle.insertAdjacentHTML('beforeend', `<h3><small>${aName}</small><br>${card.name}</h3>`);
+            viewPuzzle.insertAdjacentHTML('beforeend', `<h3><small style="color:#e09f3e;">${aName}</small><br>${card.name}</h3>`);
             
             const grid = document.createElement('div');
             grid.className = 'puzzle-grid';
@@ -601,12 +665,12 @@ const firebaseConfig = {
                         hasMatches = true;
                         resultsHtml += `<div class="match-card"><h4>👤 ${otherName}</h4>`;
                         if (giveToMe.length > 0) {
-                            resultsHtml += `<div class="match-detail" style="border-left: 3px solid #6bc85f;">
-                                            <b>${i18n[currLang].givesYou}</b><br>${giveToMe.join('')}</div>`;
+                            resultsHtml += `<div class="match-detail" style="border-left: 3px solid #28a745;">
+                                            <b style="color:#28a745;">${i18n[currLang].givesYou}</b><br>${giveToMe.join('')}</div>`;
                         }
                         if (takeFromMe.length > 0) {
                             resultsHtml += `<div class="match-detail" style="border-left: 3px solid #4285F4;">
-                                            <b>${i18n[currLang].asksFrom}</b><br>${takeFromMe.join('')}</div>`;
+                                            <b style="color:#4285F4;">${i18n[currLang].asksFrom}</b><br>${takeFromMe.join('')}</div>`;
                         }
                         resultsHtml += `</div>`;
                     }
