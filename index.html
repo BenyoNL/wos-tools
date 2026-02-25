@@ -24,15 +24,28 @@
         .list-item:hover { background: rgba(0, 0, 0, 0.6); }
         .list-item:active { transform: scale(0.98); }
         
-        /* ÚJ HATALMAS KÉP DIZÁJN */
         .album-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-        .album-img-large { width: 100%; max-width: 280px; height: auto; border-radius: 12px; box-shadow: 0 6px 15px rgba(0,0,0,0.5); margin-bottom: 20px; border: 2px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
+        .album-img-large { width: 100%; height: 220px; object-fit: cover; border-bottom: 3px solid #e09f3e; background: rgba(0,0,0,0.8); display: block;}
         .album-info-box { padding: 20px; box-sizing: border-box; width: 100%; }
         .album-title-large { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 15px; text-align: center; }
         
-        .card-item { background: rgba(224, 159, 62, 0.2); border-left: 4px solid #e09f3e; display: flex; justify-content: space-between; align-items: center; font-weight: bold; font-size: 18px; padding: 15px;}
+        /* ÚJ KÁRTYA RÁCS (GRID) DIZÁJN */
+        .card-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .grid-card-item { background: rgba(0,0,0,0.5); border: 2px solid rgba(224, 159, 62, 0.3); border-radius: 8px; padding: 10px; cursor: pointer; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; min-height: 140px; }
+        .grid-card-item:hover { border-color: #e09f3e; background: rgba(0,0,0,0.7); transform: translateY(-3px); }
+        .grid-card-img-placeholder { width: 100%; height: 70px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.2); }
+        .grid-card-title { font-size: 13px; font-weight: bold; color: #fff; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; text-align: center;}
         
-        /* Kereső találatok dizájnja (ezt raktam vissza) */
+        .card-prog-wrap { width: 100%; height: 16px; background: rgba(0,0,0,0.8); border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; }
+        .card-prog-fill { height: 100%; background: #e09f3e; width: 0%; transition: width 0.3s; }
+        .card-prog-txt { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 11px; line-height: 16px; color: #fff; font-weight: bold; text-shadow: 1px 1px 1px #000; }
+        .card-complete-txt { color: #4CAF50; font-weight: bold; font-size: 14px; margin-top: auto; text-align: center;}
+        
+        .grid-fast-fill { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.2s; z-index: 5; }
+        .grid-fast-fill.checked { background: #28a745; border-color: #28a745; color: white; }
+        .grid-fast-fill.unchecked { color: transparent; }
+        .grid-fast-fill.unchecked:hover { color: white; border-color: white; }
+        
         .search-item { background: rgba(23, 162, 184, 0.2); border-left: 4px solid #17a2b8; text-align: left; padding: 15px; display: block; }
         .search-item span { display: block; font-size: 13px; color: #aaa; font-weight: normal; margin-top: 5px; }
 
@@ -56,11 +69,6 @@
         .piece-missing { background: linear-gradient(135deg, #4a5568, #2d3748); opacity: 0.8;}
         .piece-surplus { background: linear-gradient(135deg, #2b5876, #4e4376); }
         
-        .check-btn { width: 34px; height: 34px; border-radius: 6px; border: 2px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 20px; cursor: pointer; transition: all 0.2s; background: rgba(0,0,0,0.2); }
-        .check-btn.checked { background-color: #28a745; border-color: #28a745; color: white; box-shadow: 0 0 10px rgba(40,167,69,0.5);}
-        .check-btn.unchecked { color: transparent; }
-        .check-btn.unchecked:hover { background-color: rgba(255,255,255,0.1); border-color: white;}
-
         #toast-msg { visibility: hidden; min-width: 250px; background-color: rgba(40, 167, 69, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 15px; position: fixed; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, visibility 0.3s; pointer-events: none; backdrop-filter: blur(5px); }
         #toast-msg.show { visibility: visible; opacity: 1; }
         
@@ -70,23 +78,6 @@
         .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
         
         hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;}
-/* --- ÚJ KÁRTYA RÁCS (GRID) DIZÁJN --- */
-        .card-grid-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
-        .grid-card-item { background: rgba(0,0,0,0.5); border: 2px solid rgba(224, 159, 62, 0.3); border-radius: 8px; padding: 10px; cursor: pointer; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; min-height: 140px; }
-        .grid-card-item:hover { border-color: #e09f3e; background: rgba(0,0,0,0.7); transform: translateY(-3px); }
-        .grid-card-img-placeholder { width: 100%; height: 70px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.2); }
-        .grid-card-title { font-size: 13px; font-weight: bold; color: #fff; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
-        
-        .card-prog-wrap { width: 100%; height: 16px; background: rgba(0,0,0,0.8); border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; }
-        .card-prog-fill { height: 100%; background: #e09f3e; width: 0%; transition: width 0.3s; }
-        .card-prog-txt { position: absolute; top: 0; left: 0; width: 100%; text-align: center; font-size: 11px; line-height: 16px; color: #fff; font-weight: bold; text-shadow: 1px 1px 1px #000; }
-        .card-complete-txt { color: #4CAF50; font-weight: bold; font-size: 14px; margin-top: auto; }
-        
-        /* A kis "gyorskitöltő" pipa gomb a sarokban */
-        .grid-fast-fill { position: absolute; top: -8px; right: -8px; width: 24px; height: 24px; border-radius: 50%; background: rgba(0,0,0,0.8); border: 1px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px; cursor: pointer; transition: all 0.2s; z-index: 5; }
-        .grid-fast-fill.checked { background: #28a745; border-color: #28a745; color: white; }
-        .grid-fast-fill.unchecked { color: transparent; }
-        .grid-fast-fill.unchecked:hover { color: white; border-color: white; }
     </style>
 </head>
 <body>
@@ -128,10 +119,10 @@
             <div>
                 <select id="lang-selector">
                     <option value="en" selected>🇬🇧 English</option>
+                    <option value="hu">🇭🇺 Magyar</option>
                     <option value="de">🇩🇪 Deutsch</option>
                     <option value="fr">🇫🇷 Français</option>
                     <option value="tr">🇹🇷 Türkçe</option>
-		    <option value="hu">🇭🇺 Magyar</option>
                     <option value="ru">🇷🇺 Русский</option>
                     <option value="ar">🇸🇦 العربية</option>
                 </select>
@@ -186,8 +177,8 @@ const firebaseConfig = {
         window.currentCardGlobal = null;
 
         const i18n = {
-            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set missing to 1", cardsOwnedInfo: "Completed Cards", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", noMatch: "No matching players found. (Note: Trades only appear if you have 2+ of a piece, and they have 0!)" },
-            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", cardsOwnedInfo: "Ezek a kártyák megvannak", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", noMatch: "Nincs találat a cserepartnerekre. (Tipp: Cseréhez legalább 2 db kell valamiből!)" },
+            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set missing to 1", cardsOwnedInfo: "Completed Cards", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", noMatch: "No matching players found." },
+            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", cardsOwnedInfo: "Ezek a kártyák megvannak", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", noMatch: "Nincs találat a cserepartnerekre." },
             de: { state: "Staat", alliance: "Allianz", btnClan: "🤝 Suche im Clan", btnState: "🌍 Suche im Staat", searchPh: "🔍 Album suchen...", btnSave: "💾 Speichern", btnLogout: "Abmelden", backAlbum: "⬅ Zurück", backCard: "⬅ Zurück", markDone: "✔ Fehlende auf 1", cardsOwnedInfo: "Komplette Karten", givesYou: "Kann dir geben:", asksFrom: "Fragt von dir:", traded: "Gehandelt!", noMatch: "Keine passenden Spieler gefunden." },
             fr: { state: "État", alliance: "Alliance", btnClan: "🤝 Chercher dans le Clan", btnState: "🌍 Chercher dans l'État", searchPh: "🔍 Chercher...", btnSave: "💾 Sauvegarder", btnLogout: "Déconnexion", backAlbum: "⬅ Retour", backCard: "⬅ Retour", markDone: "✔ Marquer à 1", cardsOwnedInfo: "Cartes complètes", givesYou: "Peut vous donner:", asksFrom: "Vous demande:", traded: "Échangé!", noMatch: "Aucun joueur correspondant." },
             tr: { state: "Eyalet", alliance: "İttifak", btnClan: "🤝 Klanda Ara", btnState: "🌍 Eyalette Ara", searchPh: "🔍 Ara...", btnSave: "💾 Kaydet", btnLogout: "Çıkış Yap", backAlbum: "⬅ Albümlere Dön", backCard: "⬅ Kartlara Dön", markDone: "✔ Eksikleri 1 yap", cardsOwnedInfo: "Tamamlanan kartlar", givesYou: "Sana verebilir:", asksFrom: "Senden istiyor:", traded: "Takas edildi!", noMatch: "Eşleşen oyuncu bulunamadı." },
@@ -198,39 +189,39 @@ const firebaseConfig = {
 
         // --- AZ ALBUMOK ÉS KÉPEK ---
         const albumAdatok = [
-            { id: "album_0", kepFajlNev: "Rekindled_Flames.jpg", en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok", fr: "Flammes ravivées", tr: "Yeniden Alevlenen", ru: "Вновь зажженное", ar: "نيران مشتعلة" },
-            { id: "album_1", kepFajlNev: "Explore_the_World.jpg", en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot", fr: "Explorer le monde", tr: "Dünyayı Keşfet", ru: "Исследуй мир", ar: "استكشف العالم" },
+            { id: "album_0", kepFajlNev: "album_0.jpg", en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok", fr: "Flammes ravivées", tr: "Yeniden Alevlenen", ru: "Вновь зажженное", ar: "نيران مشتعلة" },
+            { id: "album_1", kepFajlNev: "album_1.jpg", en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot", fr: "Explorer le monde", tr: "Dünyayı Keşfet", ru: "Исследуй мир", ar: "استكشف العالم" },
             { id: "album_2", kepFajlNev: "Daybreak_Island.jpg", en: "Daybreak Island", de: "Insel des Tagesanbruchs", hu: "Hajnal Sziget", fr: "Île de l'Aube", tr: "Şafak Adası", ru: "Остров Рассвета", ar: "جزيرة الفجر",
               kartyaNevek: ["Daybreak Island Legend", "Island of Dreams", "Tree of Life", "Call of the Sea", "Distant Resonance", "Caravan Visit", "New Home", "Daybreak Song", "Island Splendors"] 
             },
-            { id: "album_3", kepFajlNev: "Tundra_Alliance.jpg", en: "Tundra Alliance", de: "Tundra-Allianz", hu: "Tundra Szövetség", fr: "Alliance de la Toundra", tr: "Tundra İttifakı", ru: "Альянс Тундры", ar: "تحالف التندرا" },
-            { id: "album_4", kepFajlNev: "Battlefield_Epic.jpg", en: "Battlefield Epic", de: "Schlachtfeld-Epos", hu: "Csatatéri Eposz", fr: "Épopée du champ de bataille", tr: "Savaş Alanı Destanı", ru: "Эпос поля боя", ar: "ملحمة ساحة المعركة" },
-            { id: "album_5", kepFajlNev: "Spectacular_Adventures.jpg", en: "Spectacular Adventures", de: "Spektakuläre Abenteuer", hu: "Különleges Kalandok", fr: "Aventures spectaculaires", tr: "Muhteşem Maceralar", ru: "Захватывающие приключения", ar: "مغامرات مذهلة" },
-            { id: "album_6", kepFajlNev: "Divine_Weapons.jpg", en: "Divine Weapons", de: "Göttliche Waffen", hu: "Isteni Fegyverek", fr: "Armes divines", tr: "İlahi Silahlar", ru: "Божественное оружие", ar: "أسلحة إلهية" },
-            { id: "album_7", kepFajlNev: "Song_of_Heroes.jpg", en: "Song of Heroes", de: "Heldenlied", hu: "Hősök Éneke", fr: "Chant des Héros", tr: "Kahramanların Şarkısı", ru: "Песнь Героев", ar: "أغنية الأبطال" },
-            { id: "album_8", kepFajlNev: "The_Labyrinth.jpg", en: "The Labyrinth", de: "Das Labyrinth", hu: "A Labirintus", fr: "Le Labyrinthe", tr: "Labirent", ru: "Лабиринт", ar: "المتاهة" },
-            { id: "album_9", kepFajlNev: "Nature’s_Strength.jpg", en: "Nature’s Strength", de: "Kraft der Natur", hu: "A Természet Ereje", fr: "Force de la Nature", tr: "Doğanın Gücü", ru: "Сила природы", ar: "قوة الطبيعة" },
-            { id: "album_10", kepFajlNev: "Crystalline_Mysteries.jpg", en: "Crystalline Mysteries", de: "Kristalline Geheimnisse", hu: "Kristályos Rejtélyek", fr: "Mystères Cristallins", tr: "Kristal Gizemler", ru: "Кристальные тайны", ar: "أسرار بلورية" },
-            { id: "album_11", kepFajlNev: "Ballad_of_Wind_and_Cold.jpg", en: "Ballad of Wind and Cold", de: "Ballade von Wind und Kälte", hu: "A Szél és Hideg Balladája", fr: "Ballade du Vent", tr: "Rüzgarın Baladı", ru: "Баллада о Ветре", ar: "أغنية الريح" },
-            { id: "album_12", kepFajlNev: "Infernal_Power.jpg", en: "Infernal Power", de: "Höllenmacht", hu: "Pokoli Erő", fr: "Puissance Infernale", tr: "Cehennem Gücü", ru: "Адская сила", ar: "قوة جهنمية" },
-            { id: "album_13", kepFajlNev: "Prerogative_of_the_Flame.jpg", en: "Prerogative of the Flame", de: "Vorrecht der Flamme", hu: "A Láng Előjoga", fr: "Prérogative de la Flamme", tr: "Alevin Ayrıcalığı", ru: "Прерогатива Пламени", ar: "امتياز اللهب" },
-            { id: "album_14", kepFajlNev: "Frostdragon_Empire.jpg", en: "Frostdragon Empire", de: "Frostdrachen-Imperium", hu: "Fagysárkány Birodalom", fr: "Empire du Dragon de Givre", tr: "Buz Ejderhası İmparatorluğu", ru: "Империя Ледяного Дракона", ar: "إمبراطورية تنين الصقيع" },
-            { id: "album_15", kepFajlNev: "Kings_of_Combat.jpg", en: "Kings of Combat", de: "Könige des Kampfes", hu: "A Harc Királyai", fr: "Rois du Combat", tr: "Savaş Kralları", ru: "Короли Битвы", ar: "ملوك القتال" }
+            { id: "album_3", kepFajlNev: "album_3.jpg", en: "Tundra Alliance", de: "Tundra-Allianz", hu: "Tundra Szövetség", fr: "Alliance de la Toundra", tr: "Tundra İttifakı", ru: "Альянс Тундры", ar: "تحالف التندرا" },
+            { id: "album_4", kepFajlNev: "album_4.jpg", en: "Battlefield Epic", de: "Schlachtfeld-Epos", hu: "Csatatéri Eposz", fr: "Épopée du champ de bataille", tr: "Savaş Alanı Destanı", ru: "Эпос поля боя", ar: "ملحمة ساحة المعركة" },
+            { id: "album_5", kepFajlNev: "album_5.jpg", en: "Spectacular Adventures", de: "Spektakuläre Abenteuer", hu: "Különleges Kalandok", fr: "Aventures spectaculaires", tr: "Muhteşem Maceralar", ru: "Захватывающие приключения", ar: "مغامرات مذهلة" },
+            { id: "album_6", kepFajlNev: "album_6.jpg", en: "Divine Weapons", de: "Göttliche Waffen", hu: "Isteni Fegyverek", fr: "Armes divines", tr: "İlahi Silahlar", ru: "Божественное оружие", ar: "أسلحة إلهية" },
+            { id: "album_7", kepFajlNev: "album_7.jpg", en: "Song of Heroes", de: "Heldenlied", hu: "Hősök Éneke", fr: "Chant des Héros", tr: "Kahramanların Şarkısı", ru: "Песнь Героев", ar: "أغنية الأبطال" },
+            { id: "album_8", kepFajlNev: "album_8.jpg", en: "The Labyrinth", de: "Das Labyrinth", hu: "A Labirintus", fr: "Le Labyrinthe", tr: "Labirent", ru: "Лабиринт", ar: "المتاهة" },
+            { id: "album_9", kepFajlNev: "album_9.jpg", en: "Nature’s Strength", de: "Kraft der Natur", hu: "A Természet Ereje", fr: "Force de la Nature", tr: "Doğanın Gücü", ru: "Сила природы", ar: "قوة الطبيعة" },
+            { id: "album_10", kepFajlNev: "album_10.jpg", en: "Crystalline Mysteries", de: "Kristalline Geheimnisse", hu: "Kristályos Rejtélyek", fr: "Mystères Cristallins", tr: "Kristal Gizemler", ru: "Кристальные тайны", ar: "أسرار بلورية" },
+            { id: "album_11", kepFajlNev: "album_11.jpg", en: "Ballad of Wind and Cold", de: "Ballade von Wind und Kälte", hu: "A Szél és Hideg Balladája", fr: "Ballade du Vent", tr: "Rüzgarın Baladı", ru: "Баллада о Ветре", ar: "أغنية الريح" },
+            { id: "album_12", kepFajlNev: "album_12.jpg", en: "Infernal Power", de: "Höllenmacht", hu: "Pokoli Erő", fr: "Puissance Infernale", tr: "Cehennem Gücü", ru: "Адская сила", ar: "قوة جهنمية" },
+            { id: "album_13", kepFajlNev: "album_13.jpg", en: "Prerogative of the Flame", de: "Vorrecht der Flamme", hu: "A Láng Előjoga", fr: "Prérogative de la Flamme", tr: "Alevin Ayrıcalığı", ru: "Прерогатива Пламени", ar: "امتياز اللهب" },
+            { id: "album_14", kepFajlNev: "album_14.jpg", en: "Frostdragon Empire", de: "Frostdrachen-Imperium", hu: "Fagysárkány Birodalom", fr: "Empire du Dragon de Givre", tr: "Buz Ejderhası İmparatorluğu", ru: "Империя Ледяного Дракона", ar: "إمبراطورية تنين الصقيع" },
+            { id: "album_15", kepFajlNev: "album_15.jpg", en: "Kings of Combat", de: "Könige des Kampfes", hu: "A Harc Királyai", fr: "Rois du Combat", tr: "Savaş Kralları", ru: "Короли Битвы", ar: "ملوك القتال" }
         ];
 
-window.gameData = albumAdatok.map((album) => {
+        window.gameData = albumAdatok.map((album) => {
             return {
                 id: album.id,
                 image: `images/${album.kepFajlNev}`, 
                 names: { en: album.en, hu: album.hu, de: album.de, fr: album.fr, tr: album.tr, ru: album.ru, ar: album.ar },
                 cards: Array.from({length: 9}, (_, cIdx) => ({ 
                     id: `${album.id}_card_${cIdx+1}`, 
-                    // Itt a trükk: Ha van megadott név, használja azt, különben marad a Card 1, 2...
                     name: album.kartyaNevek ? album.kartyaNevek[cIdx] : `Card ${cIdx+1}`,
                     pieceCount: 15
                 }))
             };
         });
+
         // --- GOMBOK ÉS ESEMÉNYEK ---
         document.getElementById('lang-selector').addEventListener('change', (e) => {
             window.currLang = e.target.value;
@@ -252,7 +243,6 @@ window.gameData = albumAdatok.map((album) => {
         document.getElementById('btn-match-state').addEventListener('click', () => runMatchmaker('state'));
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
-        // --- KERESŐ VISSZAÁLLÍTÁSA (EZ HIÁNYZOTT!) ---
         document.getElementById('search-input').addEventListener('input', (e) => {
             const queryText = e.target.value.toLowerCase().trim();
             if (queryText === '') {
@@ -268,7 +258,6 @@ window.gameData = albumAdatok.map((album) => {
             window.gameData.forEach(album => {
                 const aName = album.names[window.currLang] || album.names['en'];
                 
-                // Keresés Album névre
                 if (aName.toLowerCase().includes(queryText)) {
                     foundSomething = true;
                     const res = document.createElement('div');
@@ -278,7 +267,6 @@ window.gameData = albumAdatok.map((album) => {
                     viewSearch.appendChild(res);
                 }
                 
-                // Keresés Kártya névre
                 album.cards.forEach(card => {
                     if (card.name.toLowerCase().includes(queryText)) {
                         foundSomething = true;
@@ -296,6 +284,15 @@ window.gameData = albumAdatok.map((album) => {
             }
             viewSearch.style.display = 'block';
         });
+
+        // --- ENTERREL BELÉPÉS ---
+        const handleLoginEnter = (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('email-login-btn').click();
+            }
+        };
+        document.getElementById('email-input').addEventListener('keydown', handleLoginEnter);
+        document.getElementById('password-input').addEventListener('keydown', handleLoginEnter);
 
         const authScreen = document.getElementById('auth-screen');
         const profileScreen = document.getElementById('profile-setup-screen');
@@ -347,11 +344,10 @@ window.gameData = albumAdatok.map((album) => {
             document.getElementById('view-search-results').style.display='none'; 
         }
 
-        // --- RENDERELŐ FUNKCIÓK ---
         function renderAlbums() {
             hideAllViews();
             window.currentAlbumGlobal = null; window.currentCardGlobal = null;
-            document.getElementById('search-input').value = ''; // Kereső nullázása
+            document.getElementById('search-input').value = ''; 
             const viewAlbums = document.getElementById('view-albums');
             viewAlbums.innerHTML = '';
             
@@ -374,7 +370,7 @@ window.gameData = albumAdatok.map((album) => {
                 btn.onclick = () => renderCards(album);
                 
                 btn.innerHTML = `
-                    <img src="${album.image}" class="album-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23555%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
+                    <img src="${album.image}" class="album-img-large" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23555%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
                     <div class="album-info-box">
                         <div class="album-title-large">${aName}</div>
                         <div class="progress-bg">
@@ -388,30 +384,38 @@ window.gameData = albumAdatok.map((album) => {
             viewAlbums.style.display = 'block';
         }
 
-function renderCards(album) {
+        function renderCards(album) {
             hideAllViews();
             window.currentAlbumGlobal = album;
             const viewCards = document.getElementById('view-cards');
             viewCards.innerHTML = '';
             const aName = album.names[window.currLang] || album.names['en'];
 
+            // GOMB BALRA ZÁRÁSA
+            const topDiv = document.createElement('div');
+            topDiv.style.display = "flex"; 
+            topDiv.style.justifyContent = "flex-start"; 
+            topDiv.style.marginBottom = "15px";
+
             const backBtn = document.createElement('button');
             backBtn.className = 'btn btn-back';
+            backBtn.style.margin = "0"; 
             backBtn.textContent = i18n[window.currLang].backAlbum;
             backBtn.onclick = () => renderAlbums();
-            viewCards.appendChild(backBtn);
+            
+            topDiv.appendChild(backBtn);
+            viewCards.appendChild(topDiv);
 
             viewCards.insertAdjacentHTML('beforeend', `
                 <h3 style="text-align:left; margin-top:0;">📖 ${aName}</h3>
                 <p style="text-align:right; font-size:12px; color:#aaa; margin-bottom:5px;">${i18n[window.currLang].cardsOwnedInfo} ⬇</p>
             `);
             
-            // Létrehozzuk a Grid (Rács) konténert
+            // ÚJ RÁCSOS NÉZET
             const gridContainer = document.createElement('div');
             gridContainer.className = 'card-grid-container';
 
             album.cards.forEach(card => {
-                // Kiszámoljuk, hány darab van meg pontosan a kártyából
                 let collectedPieces = 0;
                 for(let p = 1; p <= card.pieceCount; p++) {
                     const pid = `${card.id}_piece_${p}`;
@@ -426,7 +430,6 @@ function renderCards(album) {
                 cardDiv.className = 'grid-card-item';
                 cardDiv.onclick = () => renderPuzzle(album, card);
                 
-                // Gyorskitöltő pipa a sarokban
                 const fastFillBtn = document.createElement('div');
                 fastFillBtn.className = `grid-fast-fill ${isComplete ? 'checked' : 'unchecked'}`;
                 fastFillBtn.innerHTML = '✔';
@@ -446,7 +449,6 @@ function renderCards(album) {
                     renderCards(album); 
                 };
                 
-                // A kártya tartalmának összeállítása (Kép helye, Név, és Folyamat / Complete)
                 let statusHtml = '';
                 if (isComplete) {
                     statusHtml = `<div class="card-complete-txt">Complete</div>`;
