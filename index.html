@@ -135,10 +135,10 @@
             </div>
         </div>
         
-<div class="action-buttons">
-            <button id="btn-match-clan" class="btn btn-blue t-btn-clan" style="width: 48%; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); position: relative;">🤝 Search in Alliance<span id="badge-clan" class="trade-badge">0</span></button>
-            <button id="btn-match-state" class="btn btn-dark t-btn-state" style="width: 48%; position: relative;">🌍 Search in State<span id="badge-state" class="trade-badge">0</span></button>
-            <button id="btn-match-global" class="btn btn-dark t-btn-global" style="width: 100%; position: relative; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1);">🌌 Search in All States<span id="badge-global" class="trade-badge">0</span></button>
+<div class="action-buttons" style="display: flex; justify-content: space-between; gap: 5px;">
+            <button id="btn-match-clan" class="btn btn-blue t-btn-clan" style="flex: 2; font-size: 13px; padding: 10px 5px; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); position: relative;">🤝 Search in Alliance<span id="badge-clan" class="trade-badge">0</span></button>
+            <button id="btn-match-state" class="btn btn-dark t-btn-state" style="flex: 2; font-size: 13px; padding: 10px 5px; position: relative;">🌍 Search in State<span id="badge-state" class="trade-badge">0</span></button>
+            <button id="btn-match-global" class="btn btn-dark t-btn-global" style="flex: 1; font-size: 11px; padding: 10px 2px; position: relative; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); line-height: 1.2; word-wrap: break-word; white-space: normal;">🌌 Search in All States<span id="badge-global" class="trade-badge">0</span></button>
         </div>
 
         <div id="search-bar">
@@ -764,33 +764,31 @@ async function updateTradeBadges() {
                     if (userDoc.id === window.currentUserUid) return;
                     const otherData = userDoc.data();
                     const otherInv = otherData.inventory || {};
-                    let hasTrade = false;
+                    let userTradeCount = 0;
 
                     for (let aIdx = 0; aIdx < window.gameData.length; aIdx++) {
-                        if(hasTrade) break;
                         const album = window.gameData[aIdx];
                         for (let cIdx = 0; cIdx < album.cards.length; cIdx++) {
-                            if(hasTrade) break;
                             const card = album.cards[cIdx];
                             for(let p = 1; p <= card.pieceCount; p++) {
                                 const pieceId = `${card.id}_piece_${p}`;
                                 const myQty = window.userInventory[pieceId] || 0;
                                 const otherQty = otherInv[pieceId] || 0;
 
+                                // Minden egyes konkrét cserelehetőségnél növeljük a számot
                                 if ((myQty === 0 && otherQty >= 2) || (myQty >= 2 && otherQty === 0)) {
-                                    hasTrade = true;
-                                    break;
+                                    userTradeCount++;
                                 }
                             }
                         }
                     }
 
-                    if (hasTrade) {
-                        globalTrades++;
+                    if (userTradeCount > 0) {
+                        globalTrades += userTradeCount;
                         if (otherData.szerver === myServer) {
-                            stateTrades++;
+                            stateTrades += userTradeCount;
                             if (otherData.szovetseg === myAlliance) {
-                                clanTrades++;
+                                clanTrades += userTradeCount;
                             }
                         }
                     }
