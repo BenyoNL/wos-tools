@@ -562,11 +562,35 @@ darabszamok: [12, 15, 15, 15, 15, 18, 18, 18, 18]
                 
 let statusHtml = '';
                 if (isComplete) {
-                    // Ha kész a kártya, megjelenik a Play gomb! A videó neve pl: images/album_2_card_1.mp4 lesz.
+                    const videoUrl = card.image.replace('.jpg', '.mp4');
+                    const vidContainerId = `vid-status-${card.id}`;
+                    
+                    // Alapból egy "töltés" vagy üres helyőrző jelenik meg
                     statusHtml = `
                         <div class="card-complete-txt">Complete</div>
-                        <button class="btn btn-play btn-small" onclick="event.stopPropagation(); playCardVideo('images/${card.id}.mp4')">▶️ Play Animation</button>
+                        <div id="${vidContainerId}" style="margin-top: 5px; font-size: 10px; color: #ffc107; text-align: center; font-style: italic; line-height: 1.2;">⏳ Keresés...</div>
                     `;
+                    
+                    // A háttérben ellenőrizzük, hogy létezik-e az mp4 fájl a szerveren
+                    fetch(videoUrl, { method: 'HEAD' })
+                        .then(response => {
+                            const container = document.getElementById(vidContainerId);
+                            if (!container) return;
+                            
+                            if (response.ok) {
+                                // Ha a fájl létezik, betesszük a Play gombot!
+                                container.innerHTML = `<button class="btn btn-play btn-small" style="margin:0; width:100%;" onclick="event.stopPropagation(); playCardVideo('${videoUrl}')">▶️ Play Animation</button>`;
+                            } else {
+                                // Ha a fájl nem létezik (404), kiírjuk a szöveget
+                                container.innerHTML = `A videó feltöltése folyamatban...`;
+                            }
+                        })
+                        .catch(() => {
+                            // Ha bármilyen más hálózati hiba van
+                            const container = document.getElementById(vidContainerId);
+                            if (container) container.innerHTML = `A videó feltöltése folyamatban...`;
+                        });
+                        
                 } else {
                     statusHtml = `
                         <div class="card-prog-wrap">
