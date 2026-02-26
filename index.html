@@ -25,7 +25,7 @@
         .list-item:active { transform: scale(0.98); }
         
         .album-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
-        .album-img-large { width: 100%; max-height: 280px; height: auto; object-fit: contain; border-bottom: 3px solid #e09f3e; background: rgba(0,0,0,0.8); display: block; }
+        .album-img { width: 65px; height: 65px; border-radius: 10px; object-fit: cover; margin-right: 20px; background: rgba(0,0,0,0.5); border: 2px solid rgba(255,255,255,0.2); }
         .album-info-box { padding: 20px; box-sizing: border-box; width: 100%; }
         .album-title-large { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 15px; text-align: center; }
         
@@ -34,6 +34,7 @@
         .grid-card-item { background: rgba(0,0,0,0.5); border: 2px solid rgba(224, 159, 62, 0.3); border-radius: 8px; padding: 10px; cursor: pointer; position: relative; display: flex; flex-direction: column; justify-content: space-between; transition: all 0.2s; min-height: 140px; }
         .grid-card-item:hover { border-color: #e09f3e; background: rgba(0,0,0,0.7); transform: translateY(-3px); }
         .grid-card-img-placeholder { width: 100%; height: 70px; background: rgba(255,255,255,0.05); border-radius: 6px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: rgba(255,255,255,0.2); }
+.grid-card-img { width: 100%; height: 70px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.5); }
         .grid-card-title { font-size: 13px; font-weight: bold; color: #fff; line-height: 1.2; flex-grow: 1; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; text-align: center;}
         
         .card-prog-wrap { width: 100%; height: 16px; background: rgba(0,0,0,0.8); border-radius: 4px; border: 1px solid rgba(255,255,255,0.2); position: relative; overflow: hidden; }
@@ -58,16 +59,19 @@
         .action-buttons { display: flex; justify-content: center; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;}
         #search-bar { position: sticky; top: 0; background: rgba(25, 35, 50, 0.95); padding: 10px 0; z-index: 10; border-radius: 10px; margin-bottom: 15px; backdrop-filter: blur(5px);}
         
-        .puzzle-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 12px; margin-top: 15px; }
-        .puzzle-piece { border-radius: 10px; padding: 8px; background: linear-gradient(135deg, #4b6cb7, #182848); display: flex; flex-direction: column; align-items: center; justify-content: space-between; min-height: 110px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); outline: none; transition: transform 0.1s; }
-        .puzzle-piece:focus { border: 2px solid #ffc107; transform: scale(1.05); }
-        .piece-shape { width: 45px; height: 45px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 18px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.2);}
-        .controls { display: flex; align-items: center; justify-content: space-between; width: 100%; background: rgba(0,0,0,0.4); border-radius: 6px; overflow: hidden; padding: 2px;}
-        .qty-btn { background: transparent; border: none; padding: 5px 10px; cursor: pointer; font-weight: bold; font-size: 16px; color: white; transition: background 0.2s;}
-        .qty-btn:hover { background: rgba(255,255,255,0.2); }
-        .qty-display { font-weight: bold; color: #fff; font-size: 16px;}
-        .piece-missing { background: linear-gradient(135deg, #4a5568, #2d3748); opacity: 0.8;}
-        .piece-surplus { background: linear-gradient(135deg, #2b5876, #4e4376); }
+.puzzle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .puzzle-piece { border-radius: 10px; padding: 6px; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: transform 0.1s; border: 2px solid transparent; }
+        .puzzle-piece:focus { border-color: #ffc107; transform: scale(1.05); outline: none; }
+        
+        .piece-img-bg { width: 100%; aspect-ratio: 1 / 1; background-size: 300% 500%; background-repeat: no-repeat; border-radius: 6px; background-color: rgba(255,255,255,0.05); transition: all 0.3s; }
+        .piece-missing .piece-img-bg { filter: grayscale(100%) opacity(0.3); }
+        .piece-surplus { border-color: #e09f3e; }
+        
+        .qty-badge { position: absolute; bottom: 5px; right: 5px; background: rgba(0,0,0,0.8); color: #fff; font-size: 14px; font-weight: bold; padding: 2px 8px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); z-index: 2; }
+        
+        .controls { display: flex; align-items: center; justify-content: space-between; width: 100%; margin-top: 8px; gap: 5px; }
+        .qty-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; padding: 5px 0; cursor: pointer; font-weight: bold; font-size: 18px; color: white; transition: background 0.2s; flex: 1; display: flex; align-items: center; justify-content: center; height: 32px;}
+        .qty-btn:hover { background: rgba(255,255,255,0.3); }
         
         #toast-msg { visibility: hidden; min-width: 250px; background-color: rgba(40, 167, 69, 0.95); color: #fff; text-align: center; border-radius: 8px; padding: 15px; position: fixed; z-index: 1000; left: 50%; top: 50%; transform: translate(-50%, -50%); font-size: 18px; font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s, visibility 0.3s; pointer-events: none; backdrop-filter: blur(5px); }
         #toast-msg.show { visibility: visible; opacity: 1; }
@@ -77,7 +81,14 @@
         .match-detail { margin: 8px 0; font-size: 14px; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px;}
         .trade-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; border-bottom: 1px dashed rgba(255,255,255,0.1); padding-bottom: 8px;}
         
-        .trade-badge { position: absolute; top: -8px; right: -8px; background: #dc3545; color: white; border-radius: 50%; padding: 4px 8px; font-size: 12px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.5); display: none; z-index: 5; }
+        hr { border: 0; border-top: 1px solid rgba(255,255,255,0.1); margin: 25px 0;}
+/* GYORS MENÜ (CAROUSEL) ALULRA */
+        .quick-nav-container { display: flex; overflow-x: auto; gap: 10px; padding: 10px 0; margin-top: 30px; border-top: 1px solid rgba(255,255,255,0.1); scroll-behavior: smooth; }
+        .quick-nav-container::-webkit-scrollbar { display: none; } /* Elrejti a görgetősávot, de ujjhúzással működik! */
+        .quick-nav-item { flex: 0 0 auto; width: 80px; text-align: center; cursor: pointer; opacity: 0.5; transition: all 0.2s; }
+        .quick-nav-item.active { opacity: 1; transform: scale(1.05); border-bottom: 2px solid #e09f3e; padding-bottom: 5px; }
+        .quick-nav-img { width: 100%; height: 50px; object-fit: cover; border-radius: 6px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.5); }
+        .quick-nav-title { font-size: 10px; color: #fff; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     </style>
 </head>
 <body>
@@ -110,7 +121,7 @@
     <div id="profile-setup-screen" class="container" style="display: none;">
         <h2 style="color: #e09f3e;">Setup your profile</h2>
         <input type="text" id="player-name" placeholder="Player Name (any characters)">
-        <input type="number" id="server-number" placeholder="State/Server (3 or 4 digits, e.g., 253)">
+        <input type="number" id="server-number" placeholder="State/Server (exactly 4 digits, e.g., 2530)">
         <input type="text" id="alliance-name" placeholder="Alliance Tag (exactly 3 chars, e.g., ABC)">
         <div id="profile-error" style="color:#ff6b6b; margin-bottom:10px; font-weight:bold;"></div>
         <button id="save-profile-btn" class="btn btn-green">Save & Continue</button>
@@ -135,10 +146,9 @@
             </div>
         </div>
         
-<div class="action-buttons" style="display: flex; justify-content: space-between; gap: 5px;">
-            <button id="btn-match-clan" class="btn btn-blue t-btn-clan" style="flex: 2; font-size: 13px; padding: 10px 5px; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4); position: relative;">🤝 Search in Alliance<span id="badge-clan" class="trade-badge">0</span></button>
-            <button id="btn-match-state" class="btn btn-dark t-btn-state" style="flex: 2; font-size: 13px; padding: 10px 5px; position: relative;">🌍 Search in State<span id="badge-state" class="trade-badge">0</span></button>
-            <button id="btn-match-global" class="btn btn-dark t-btn-global" style="flex: 1; font-size: 11px; padding: 10px 2px; position: relative; box-shadow: 0 4px 15px rgba(255, 255, 255, 0.1); line-height: 1.2; word-wrap: break-word; white-space: normal;">🌌 Search in All States<span id="badge-global" class="trade-badge">0</span></button>
+        <div class="action-buttons">
+            <button id="btn-match-clan" class="btn btn-blue t-btn-clan" style="width: 48%; box-shadow: 0 4px 15px rgba(66, 133, 244, 0.4);">🤝 Search in Clan</button>
+            <button id="btn-match-state" class="btn btn-dark t-btn-state" style="width: 48%;">🌍 Search in State</button>
         </div>
 
         <div id="search-bar">
@@ -183,14 +193,14 @@ const firebaseConfig = {
         window.currentAlbumGlobal = null;
         window.currentCardGlobal = null;
 
-const i18n = {
-            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Alliance", btnState: "🌍 Search in State", btnGlobal: "🌌 Search in All States", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set missing to 1", cardsOwnedInfo: "Completed Cards", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", noMatch: "No matching players found. (Note: Trades only appear if you have 2+ of a piece, and they have 0!)" },
-            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Szövetségben", btnState: "🌍 Keresés Államban", btnGlobal: "🌌 Keresés Minden Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", cardsOwnedInfo: "Ezek a kártyák megvannak", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", noMatch: "Nincs találat a cserepartnerekre. (Tipp: Cseréhez legalább 2 db kell valamiből!)" },
-            de: { state: "Staat", alliance: "Allianz", btnClan: "🤝 Suche in Allianz", btnState: "🌍 Suche im Staat", btnGlobal: "🌌 Suche in Allen Staaten", searchPh: "🔍 Album suchen...", btnSave: "💾 Speichern", btnLogout: "Abmelden", backAlbum: "⬅ Zurück", backCard: "⬅ Zurück", markDone: "✔ Fehlende auf 1", cardsOwnedInfo: "Komplette Karten", givesYou: "Kann dir geben:", asksFrom: "Fragt von dir:", traded: "Gehandelt!", noMatch: "Keine passenden Spieler gefunden." },
-            fr: { state: "État", alliance: "Alliance", btnClan: "🤝 Chercher dans l'Alliance", btnState: "🌍 Chercher dans l'État", btnGlobal: "🌌 Chercher dans Tous les États", searchPh: "🔍 Chercher...", btnSave: "💾 Sauvegarder", btnLogout: "Déconnexion", backAlbum: "⬅ Retour", backCard: "⬅ Retour", markDone: "✔ Marquer à 1", cardsOwnedInfo: "Cartes complètes", givesYou: "Peut vous donner:", asksFrom: "Vous demande:", traded: "Échangé!", noMatch: "Aucun joueur correspondant." },
-            tr: { state: "Eyalet", alliance: "İttifak", btnClan: "🤝 İttifakta Ara", btnState: "🌍 Eyalette Ara", btnGlobal: "🌌 Tüm Eyaletlerde Ara", searchPh: "🔍 Ara...", btnSave: "💾 Kaydet", btnLogout: "Çıkış Yap", backAlbum: "⬅ Albümlere Dön", backCard: "⬅ Kartlara Dön", markDone: "✔ Eksikleri 1 yap", cardsOwnedInfo: "Tamamlanan kartlar", givesYou: "Sana verebilir:", asksFrom: "Senden istiyor:", traded: "Takas edildi!", noMatch: "Eşleşen oyuncu bulunamadı." },
-            ru: { state: "Штат", alliance: "Альянс", btnClan: "🤝 Поиск в альянсе", btnState: "🌍 Поиск в штате", btnGlobal: "🌌 Поиск во всех штатах", searchPh: "🔍 Поиск...", btnSave: "💾 Сохранить", btnLogout: "Выйти", backAlbum: "⬅ Назад", backCard: "⬅ Назад", markDone: "✔ На 1", cardsOwnedInfo: "Собранные карты", givesYou: "Может дать вам:", asksFrom: "Просит у вас:", traded: "Обменялись!", noMatch: "Игроков не найдено." },
-            ar: { state: "حالة", alliance: "تحالف", btnClan: "🤝 البحث في التحالف", btnState: "🌍 البحث في الولاية", btnGlobal: "🌌 البحث في كل الولايات", searchPh: "🔍 البحث...", btnSave: "💾 حفظ التغييرات", btnLogout: "تسجيل خروج", backAlbum: "⬅ العودة", backCard: "⬅ العودة", markDone: "✔ تعيين إلى 1", cardsOwnedInfo: "بطاقات مكتملة", givesYou: "يمكن أن يعطيك:", asksFrom: "يطلب منك:", traded: "تم التبادل!", noMatch: "لم يتم العثور على لاعبين." }
+        const i18n = {
+            en: { state: "State", alliance: "Alliance", btnClan: "🤝 Search in Clan", btnState: "🌍 Search in State", searchPh: "🔍 Search album or card...", btnSave: "💾 Save Changes", btnLogout: "Logout", backAlbum: "⬅ Back to Albums", backCard: "⬅ Back to Cards", markDone: "✔ Set missing to 1", cardsOwnedInfo: "Completed Cards", givesYou: "They can give you:", asksFrom: "They ask from you:", traded: "Traded!", noMatch: "No matching players found." },
+            hu: { state: "Állam", alliance: "Szövetség", btnClan: "🤝 Keresés Klánban", btnState: "🌍 Keresés Államban", searchPh: "🔍 Keresés albumra vagy kártyára...", btnSave: "💾 Változások Mentése", btnLogout: "Kijelentkezés", backAlbum: "⬅ Vissza az Albumokhoz", backCard: "⬅ Vissza a Kártyákhoz", markDone: "✔ Hiányzók 1-re állítása", cardsOwnedInfo: "Ezek a kártyák megvannak", givesYou: "Tud adni neked:", asksFrom: "Kéri tőled:", traded: "Elcseréltük!", noMatch: "Nincs találat a cserepartnerekre." },
+            de: { state: "Staat", alliance: "Allianz", btnClan: "🤝 Suche im Clan", btnState: "🌍 Suche im Staat", searchPh: "🔍 Album suchen...", btnSave: "💾 Speichern", btnLogout: "Abmelden", backAlbum: "⬅ Zurück", backCard: "⬅ Zurück", markDone: "✔ Fehlende auf 1", cardsOwnedInfo: "Komplette Karten", givesYou: "Kann dir geben:", asksFrom: "Fragt von dir:", traded: "Gehandelt!", noMatch: "Keine passenden Spieler gefunden." },
+            fr: { state: "État", alliance: "Alliance", btnClan: "🤝 Chercher dans le Clan", btnState: "🌍 Chercher dans l'État", searchPh: "🔍 Chercher...", btnSave: "💾 Sauvegarder", btnLogout: "Déconnexion", backAlbum: "⬅ Retour", backCard: "⬅ Retour", markDone: "✔ Marquer à 1", cardsOwnedInfo: "Cartes complètes", givesYou: "Peut vous donner:", asksFrom: "Vous demande:", traded: "Échangé!", noMatch: "Aucun joueur correspondant." },
+            tr: { state: "Eyalet", alliance: "İttifak", btnClan: "🤝 Klanda Ara", btnState: "🌍 Eyalette Ara", searchPh: "🔍 Ara...", btnSave: "💾 Kaydet", btnLogout: "Çıkış Yap", backAlbum: "⬅ Albümlere Dön", backCard: "⬅ Kartlara Dön", markDone: "✔ Eksikleri 1 yap", cardsOwnedInfo: "Tamamlanan kartlar", givesYou: "Sana verebilir:", asksFrom: "Senden istiyor:", traded: "Takas edildi!", noMatch: "Eşleşen oyuncu bulunamadı." },
+            ru: { state: "Штат", alliance: "Альянс", btnClan: "🤝 Поиск в клане", btnState: "🌍 Поиск в штате", searchPh: "🔍 Поиск...", btnSave: "💾 Сохранить", btnLogout: "Выйти", backAlbum: "⬅ Назад", backCard: "⬅ Назад", markDone: "✔ На 1", cardsOwnedInfo: "Собранные карты", givesYou: "Может дать вам:", asksFrom: "Просит у вас:", traded: "Обменялись!", noMatch: "Игроков не найдено." },
+            ar: { state: "حالة", alliance: "تحالف", btnClan: "🤝 البحث في العشيرة", btnState: "🌍 البحث في الولاية", searchPh: "🔍 البحث...", btnSave: "💾 حفظ التغييرات", btnLogout: "تسجيل خروج", backAlbum: "⬅ العودة", backCard: "⬅ العودة", markDone: "✔ تعيين إلى 1", cardsOwnedInfo: "بطاقات مكتملة", givesYou: "يمكن أن يعطيك:", asksFrom: "يطلب منك:", traded: "تم التبادل!", noMatch: "لم يتم العثور على لاعبين." }
         };
         window.currLang = 'en';
 
@@ -204,6 +214,11 @@ const i18n = {
             },
             { id: "album_2", kepFajlNev: "Daybreak_Island.jpg", en: "Daybreak Island", de: "Insel des Tagesanbruchs", hu: "Hajnal Sziget", fr: "Île de l'Aube", tr: "Şafak Adası", ru: "Остров Рассвета", ar: "جزيرة الفجر",
               kartyaNevek: ["Daybreak Island Legend", "Island of Dreams", "Tree of Life", "Call of the Sea", "Distant Resonance", "Caravan Visit", "New Home", "Daybreak Song", "Island Splendors"] 
+            },
+{ id: "album_2", kepFajlNev: "Daybreak_Island.jpg", en: "Daybreak Island", de: "Insel des Tagesanbruchs", hu: "Hajnal Sziget", fr: "Île de l'Aube", tr: "Şafak Adası", ru: "Остров Рассвета", ar: "جزيرة الفجر",
+              kartyaNevek: ["Daybreak Island Legend", "Island of Dreams", "Tree of Life", "Call of the Sea", "Distant Resonance", "Caravan Visit", "New Home", "Daybreak Song", "Island Splendors"],
+              // IDE BEÍROD MIND A 9 KÁRTYA DARABSZÁMÁT SORBAN:
+              darabszamok: [9, 12, 15, 9, 15, 12, 15, 9, 15] 
             },
             { id: "album_3", kepFajlNev: "Tundra_Alliance.jpg", en: "Tundra Alliance", de: "Tundra-Allianz", hu: "Tundra Szövetség", fr: "Alliance de la Toundra", tr: "Tundra İttifakı", ru: "Альянс Тундры", ar: "تحالف التندرا",
               kartyaNevek: ["Alliance-Building", "One Heart", "Heroes' Aid", "Alliance Resources", "Twisted Obsession", "Virtues and Crimes", "Children of the \"New World\"", "Horn of Command", "Battlefield Epic"]
@@ -246,19 +261,33 @@ const i18n = {
             }
         ];
 
-        window.gameData = albumAdatok.map((album) => {
+window.gameData = albumAdatok.map((album) => {
+            // Levágjuk a .jpg végződést az album fájlnevéből (pl. Daybreak_Island.jpg -> Daybreak_Island)
+            const baseAlbumName = album.kepFajlNev.replace('.jpg', ''); 
+            
             return {
                 id: album.id,
                 image: `images/${album.kepFajlNev}`, 
                 names: { en: album.en, hu: album.hu, de: album.de, fr: album.fr, tr: album.tr, ru: album.ru, ar: album.ar },
-                cards: Array.from({length: 9}, (_, cIdx) => ({ 
-                    id: `${album.id}_card_${cIdx+1}`, 
-                    name: album.kartyaNevek ? album.kartyaNevek[cIdx] : `Card ${cIdx+1}`,
-                    pieceCount: 15
-                }))
+                cards: Array.from({length: 9}, (_, cIdx) => { 
+                    // Megnézzük a kártya nevét
+                    const cName = album.kartyaNevek ? album.kartyaNevek[cIdx] : `Card ${cIdx+1}`;
+                    
+                    // Létrehozunk egy "fájlbarát" nevet a kártyából: szóközök -> aláhúzás, speciális jelek törlése
+                    const safeCardName = cName.replace(/ /g, '_').replace(/['"]/g, '');
+                    
+                    return {
+                        id: `${album.id}_card_${cIdx+1}`, 
+                        name: cName,
+                        // Így a keresett fájl neve pontosan az lesz, amit szeretnél!
+                        image: `images/${baseAlbumName}_${safeCardName}.jpg`, 
+                        
+                        // EZ AZ A SOR, AMI MEGVÁLTOZOTT:
+                        pieceCount: album.darabszamok ? album.darabszamok[cIdx] : 15
+                    };
+                })
             };
         });
-
         // --- GOMBOK ÉS ESEMÉNYEK ---
         document.getElementById('lang-selector').addEventListener('change', (e) => {
             window.currLang = e.target.value;
@@ -267,7 +296,6 @@ const i18n = {
             document.querySelector('.t-alliance').textContent = i18n[lang].alliance;
             document.querySelector('.t-btn-clan').textContent = i18n[lang].btnClan;
             document.querySelector('.t-btn-state').textContent = i18n[lang].btnState;
-if (document.querySelector('.t-btn-global')) document.querySelector('.t-btn-global').textContent = i18n[lang].btnGlobal;
             document.querySelector('.t-search-ph').placeholder = i18n[lang].searchPh;
             document.querySelector('.t-btn-save').textContent = i18n[lang].btnSave;
             document.querySelector('.t-btn-logout').textContent = i18n[lang].btnLogout;
@@ -279,7 +307,6 @@ if (document.querySelector('.t-btn-global')) document.querySelector('.t-btn-glob
 
         document.getElementById('btn-match-clan').addEventListener('click', () => runMatchmaker('alliance'));
         document.getElementById('btn-match-state').addEventListener('click', () => runMatchmaker('state'));
-document.getElementById('btn-match-global').addEventListener('click', () => runMatchmaker('global'));
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
         document.getElementById('search-input').addEventListener('input', (e) => {
@@ -380,7 +407,7 @@ document.getElementById('btn-match-global').addEventListener('click', () => runM
             const pServer = document.getElementById('server-number').value.trim();
             const pAlliance = document.getElementById('alliance-name').value.trim().toUpperCase();
             if(!pName || !pServer || !pAlliance) return document.getElementById('profile-error').textContent = "Please fill all fields!";
-            if((pServer.length !== 3 && pServer.length !== 4) || isNaN(pServer)) return document.getElementById('profile-error').textContent = "State must be 3 or 4 digits.";
+            if(pServer.length !== 4 || isNaN(pServer)) return document.getElementById('profile-error').textContent = "State must be 4 digits.";
             if(pAlliance.length !== 3) return document.getElementById('profile-error').textContent = "Alliance must be 3 characters.";
             await setDoc(doc(db, "jatekosok", window.currentUserUid), { jatekNev: pName, szerver: pServer, szovetseg: pAlliance, inventory: {} });
             checkUserProfile(window.currentUserUid);
@@ -396,7 +423,6 @@ document.getElementById('btn-match-global').addEventListener('click', () => runM
                 window.userInventory = data.inventory || {}; 
                 renderAlbums(); 
                 showScreen(mainScreen);
-updateTradeBadges();
             } else { showScreen(profileScreen); }
         }
 
@@ -439,7 +465,7 @@ updateTradeBadges();
                 btn.onclick = () => renderCards(album);
                 
                 btn.innerHTML = `
-                    <img src="${album.image}" class="album-img-large" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23555%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
+                    <img src="${album.image}" class="album-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect width=%22100%22 height=%22100%22 fill=%22%23555%22/%3E%3Ctext x=%2250%22 y=%2255%22 font-family=%22Arial%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22%3E?%3C/text%3E%3C/svg%3E'">
                     <div class="album-info-box">
                         <div class="album-title-large">${aName}</div>
                         <div class="progress-bg">
@@ -502,7 +528,7 @@ updateTradeBadges();
                 const fastFillBtn = document.createElement('div');
                 fastFillBtn.className = `grid-fast-fill ${isComplete ? 'checked' : 'unchecked'}`;
                 fastFillBtn.innerHTML = '✔';
-                fastFillBtn.onclick = (e) => {
+fastFillBtn.onclick = (e) => {
                     e.stopPropagation(); 
                     if(isComplete) {
                         for(let p = 1; p <= card.pieceCount; p++) {
@@ -516,6 +542,7 @@ updateTradeBadges();
                         }
                     }
                     renderCards(album); 
+                    triggerAutoSave(); // <-- EZ AZ AUTOMATIKUS MENTÉS PARANCS
                 };
                 
                 let statusHtml = '';
@@ -530,8 +557,8 @@ updateTradeBadges();
                     `;
                 }
 
-                cardDiv.innerHTML = `
-                    <div class="grid-card-img-placeholder">🖼️</div>
+cardDiv.innerHTML = `
+                    <img src="${card.image}" class="grid-card-img" onerror="this.outerHTML='<div class=\\'grid-card-img-placeholder\\'>🖼️</div>'">
                     <div class="grid-card-title">${card.name}</div>
                     ${statusHtml}
                 `;
@@ -564,12 +591,13 @@ updateTradeBadges();
             fillBtn.className = 'btn btn-green btn-small';
             fillBtn.style.margin = "0";
             fillBtn.textContent = i18n[window.currLang].markDone;
-            fillBtn.onclick = () => {
+fillBtn.onclick = () => {
                 for(let p = 1; p <= card.pieceCount; p++) {
                     const pid = `${card.id}_piece_${p}`;
                     if(!window.userInventory[pid] || window.userInventory[pid] === 0) window.userInventory[pid] = 1; 
                 }
                 renderPuzzle(album, card);
+                triggerAutoSave(); // <-- EZ AZ AUTOMATIKUS MENTÉS PARANCS
             };
 
             topDiv.appendChild(backBtn);
@@ -580,16 +608,22 @@ updateTradeBadges();
             
             const grid = document.createElement('div');
             grid.className = 'puzzle-grid';
+// Dinamikus sorkiszámítás (Hogy 9, 12 és 15 darabnál is jó legyen a képvágás)
+            const totalRows = Math.ceil(card.pieceCount / 3);
 
             for(let p = 1; p <= card.pieceCount; p++) {
                 const pieceId = `${card.id}_piece_${p}`;
                 const currentQty = window.userInventory[pieceId] || 0; 
-                let displayQty = currentQty;
                 let bgClass = '';
-                if (currentQty === 0) { displayQty = "0"; bgClass = 'piece-missing'; }
-                else if (currentQty === 1) { displayQty = "✔"; }
-                else { displayQty = `+${currentQty - 1}`; bgClass = 'piece-surplus'; }
+                if (currentQty === 0) bgClass = 'piece-missing'; 
+                else if (currentQty > 1) bgClass = 'piece-surplus';
                 
+                // Okos képvágó matematika (Dinamikusan igazodik a sorok számához)
+                const col = (p - 1) % 3;
+                const row = Math.floor((p - 1) / 3);
+                const bgX = col * 50; 
+                const bgY = totalRows > 1 ? row * (100 / (totalRows - 1)) : 0; 
+
                 const pieceDiv = document.createElement('div');
                 pieceDiv.className = `puzzle-piece ${bgClass}`;
                 pieceDiv.id = `box-${pieceId}`;
@@ -602,29 +636,60 @@ updateTradeBadges();
                     if (e.key === 'ArrowLeft') { if(pieceDiv.previousElementSibling) pieceDiv.previousElementSibling.focus(); e.preventDefault(); }
                 };
                 
+                // Még egy dinamikus CSS a háttér méretének beállításához
+                const bgSizeY = totalRows * 100;
+
                 pieceDiv.innerHTML = `
-                    <div class="piece-shape">${p}</div>
+                    <div style="position: relative; width: 100%;">
+                        <div class="piece-img-bg" style="background-image: url('${card.image}'); background-position: ${bgX}% ${bgY}%; background-size: 300% ${bgSizeY}%;"></div>
+                        <div class="qty-badge" id="qty-${pieceId}">${currentQty}</div>
+                    </div>
                     <div class="controls">
                         <button tabindex="-1" class="qty-btn minus" id="minus-${pieceId}">-</button>
-                        <span class="qty-display" id="qty-${pieceId}">${displayQty}</span>
                         <button tabindex="-1" class="qty-btn plus" id="plus-${pieceId}">+</button>
                     </div>
                 `;
                 grid.appendChild(pieceDiv);
                 
                 setTimeout(() => {
-                    document.getElementById(`minus-${pieceId}`).addEventListener('click', () => {
-                        updateQty(pieceId, -1);
-                        document.getElementById(`box-${pieceId}`).focus();
-                    });
-                    document.getElementById(`plus-${pieceId}`).addEventListener('click', () => {
-                        updateQty(pieceId, 1);
-                        document.getElementById(`box-${pieceId}`).focus();
-                    });
+                    document.getElementById(`minus-${pieceId}`).addEventListener('click', () => { updateQty(pieceId, -1); });
+                    document.getElementById(`plus-${pieceId}`).addEventListener('click', () => { updateQty(pieceId, 1); });
                 }, 0);
             }
             viewPuzzle.appendChild(grid);
+
+            // --- ÚJ: GYORS MENÜ (CAROUSEL) ALULRA ---
+            const quickNav = document.createElement('div');
+            quickNav.className = 'quick-nav-container';
+            
+            album.cards.forEach(c => {
+                const navItem = document.createElement('div');
+                navItem.className = `quick-nav-item ${c.id === card.id ? 'active' : ''}`;
+                navItem.onclick = () => renderPuzzle(album, c); // Kattintásra azonnal betölti az új kártyát
+                navItem.innerHTML = `
+                    <img src="${c.image}" class="quick-nav-img" onerror="this.outerHTML='<div class=\\'quick-nav-img\\' style=\\'display:flex;align-items:center;justify-content:center;font-size:16px;\\'>🖼️</div>'">
+                    <div class="quick-nav-title">${c.name}</div>
+                `;
+                quickNav.appendChild(navItem);
+            });
+            viewPuzzle.appendChild(quickNav);
+
             viewPuzzle.style.display = 'block';
+
+// --- OKOS AUTOMATIKUS MENTÉS ---
+        let autoSaveTimeout;
+        function triggerAutoSave() {
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(async () => {
+                const toast = document.getElementById('toast-msg');
+                try {
+                    await updateDoc(doc(db, "jatekosok", window.currentUserUid), { inventory: window.userInventory });
+                    toast.textContent = "✅ Auto-Saved!";
+                    toast.classList.add("show");
+                    setTimeout(() => toast.classList.remove("show"), 2000);
+                    if (typeof updateTradeBadges === 'function') updateTradeBadges();
+                } catch (error) { console.error("Auto-save failed", error); }
+            }, 1000); // 1 másodperccel az utolsó kattintás után ment
         }
 
         function updateQty(pieceId, change) {
@@ -633,13 +698,16 @@ updateTradeBadges();
             if (currentQty < 0) currentQty = 0; 
             window.userInventory[pieceId] = currentQty; 
             
-            let displayQty = currentQty;
             const pieceBox = document.getElementById(`box-${pieceId}`);
             pieceBox.classList.remove('piece-missing', 'piece-surplus');
-            if(currentQty === 0) { displayQty = "0"; pieceBox.classList.add('piece-missing'); } 
-            else if(currentQty === 1) { displayQty = "✔"; } 
-            else { displayQty = `+${currentQty - 1}`; pieceBox.classList.add('piece-surplus'); }
-            document.getElementById(`qty-${pieceId}`).textContent = displayQty;
+            
+            if(currentQty === 0) { pieceBox.classList.add('piece-missing'); } 
+            else if(currentQty > 1) { pieceBox.classList.add('piece-surplus'); }
+            
+            document.getElementById(`qty-${pieceId}`).textContent = currentQty;
+
+            // Meghívjuk az automatikus mentést minden kattintásnál!
+            triggerAutoSave();
         }
 
         document.getElementById('save-inventory-btn').addEventListener('click', async () => {
@@ -649,7 +717,6 @@ updateTradeBadges();
                 toast.textContent = "✅ Saved!";
                 toast.classList.add("show");
                 setTimeout(() => toast.classList.remove("show"), 2000);
-                updateTradeBadges();
             } catch (error) { console.error(error); }
         });
 
@@ -668,10 +735,9 @@ updateTradeBadges();
                 const myServer = document.getElementById('display-server').textContent;
                 const myAlliance = document.getElementById('display-alliance').textContent;
 
-                let q;
-                if (scope === 'alliance') q = query(collection(db, "jatekosok"), where("szerver", "==", myServer), where("szovetseg", "==", myAlliance));
-                else if (scope === 'state') q = query(collection(db, "jatekosok"), where("szerver", "==", myServer));
-                else q = query(collection(db, "jatekosok"));
+                let q = (scope === 'alliance') 
+                    ? query(collection(db, "jatekosok"), where("szerver", "==", myServer), where("szovetseg", "==", myAlliance))
+                    : query(collection(db, "jatekosok"), where("szerver", "==", myServer));
                 
                 const querySnapshot = await getDocs(q);
 
@@ -718,7 +784,7 @@ updateTradeBadges();
 
                 viewMatchmaker.innerHTML = '';
                 viewMatchmaker.appendChild(backBtn);
-                viewMatchmaker.insertAdjacentHTML('beforeend', `<h3>${scope === 'alliance' ? '🤝 ' + myAlliance : (scope === 'state' ? '🌍 ' + myServer : '🌌 All States')}</h3>`);
+                viewMatchmaker.insertAdjacentHTML('beforeend', `<h3>🤝 ${scope === 'alliance' ? myAlliance : myServer}</h3>`);
 
                 if (hasMatches) {
                     viewMatchmaker.insertAdjacentHTML('beforeend', resultsHtml);
@@ -750,60 +816,6 @@ updateTradeBadges();
                 btnElement.style.backgroundColor = "#555";
             } catch(error) { alert("Trade error!"); btnElement.disabled = false; btnElement.textContent = i18n[window.currLang].traded; }
         }
-async function updateTradeBadges() {
-            try {
-                const myServer = document.getElementById('display-server').textContent;
-                const myAlliance = document.getElementById('display-alliance').textContent;
-                
-                const qGlobal = query(collection(db, "jatekosok"));
-                const globalSnapshot = await getDocs(qGlobal);
-
-                let clanTrades = 0, stateTrades = 0, globalTrades = 0;
-
-                globalSnapshot.forEach((userDoc) => {
-                    if (userDoc.id === window.currentUserUid) return;
-                    const otherData = userDoc.data();
-                    const otherInv = otherData.inventory || {};
-                    let userTradeCount = 0;
-
-                    for (let aIdx = 0; aIdx < window.gameData.length; aIdx++) {
-                        const album = window.gameData[aIdx];
-                        for (let cIdx = 0; cIdx < album.cards.length; cIdx++) {
-                            const card = album.cards[cIdx];
-                            for(let p = 1; p <= card.pieceCount; p++) {
-                                const pieceId = `${card.id}_piece_${p}`;
-                                const myQty = window.userInventory[pieceId] || 0;
-                                const otherQty = otherInv[pieceId] || 0;
-
-                                // Minden egyes konkrét cserelehetőségnél növeljük a számot
-                                if ((myQty === 0 && otherQty >= 2) || (myQty >= 2 && otherQty === 0)) {
-                                    userTradeCount++;
-                                }
-                            }
-                        }
-                    }
-
-                    if (userTradeCount > 0) {
-                        globalTrades += userTradeCount;
-                        if (otherData.szerver === myServer) {
-                            stateTrades += userTradeCount;
-                            if (otherData.szovetseg === myAlliance) {
-                                clanTrades += userTradeCount;
-                            }
-                        }
-                    }
-                });
-
-                const bClan = document.getElementById('badge-clan');
-                const bState = document.getElementById('badge-state');
-                const bGlobal = document.getElementById('badge-global');
-
-                if(clanTrades > 0) { bClan.textContent = clanTrades; bClan.style.display = 'block'; } else { bClan.style.display = 'none'; }
-                if(stateTrades > 0) { bState.textContent = stateTrades; bState.style.display = 'block'; } else { bState.style.display = 'none'; }
-                if(globalTrades > 0) { bGlobal.textContent = globalTrades; bGlobal.style.display = 'block'; } else { bGlobal.style.display = 'none'; }
-            } catch (e) { console.error("Badge update error", e); }
-        }
     </script>
 </body>
-
 </html>
