@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -126,6 +127,19 @@
             .puzzle-nav-btn { width: 35px; height: 35px; font-size: 18px; }
             .puzzle-nav-prev { left: 2px; }
             .puzzle-nav-next { right: 2px; }
+        }
+/* 🌌 Globális keresés elrejtése és a gombok kitöltése */
+        .t-btn-global { 
+            display: none !important; 
+        }
+        .t-btn-clan, .t-btn-state { 
+            width: calc(50% - 6px) !important; /* 50-50% egy kis réssel a kettő között */
+            display: inline-block;
+        }
+
+        /* Mobilon viszont töltsék ki a teljes szélességet egymás alatt, hogy könnyebb legyen rányomni */
+        @media (max-width: 600px) {
+            .t-btn-clan, .t-btn-state { width: 100% !important; margin-bottom: 8px; }
         }
 
     </style>
