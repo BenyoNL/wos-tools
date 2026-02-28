@@ -583,14 +583,26 @@ document.getElementById('lang-selector').addEventListener('change', (e) => {
             });
         }
 
-        async function checkUserProfile(uid) {
+async function checkUserProfile(uid) {
             const docSnap = await getDoc(doc(db, "jatekosok", uid));
             if (docSnap.exists() && docSnap.data().szerver) {
                 const data = docSnap.data();
-                document.getElementById('display-name').textContent = data.jatekNev || data.nev;
+                window.userInventory = data.inventory || {}; 
+                
+                // --- SAJÁT SZÁZALÉK KISZÁMOLÁSA ---
+                let totalPieces = 0;
+                window.gameData.forEach(a => a.cards.forEach(c => totalPieces += c.pieceCount));
+                let myPieces = 0;
+                for (const key in window.userInventory) { if (window.userInventory[key] > 0) myPieces++; }
+                let myPct = totalPieces > 0 ? Math.round((myPieces / totalPieces) * 100) : 0;
+                
+                // Név és százalék kiírása a fejlécbe
+                const myName = data.jatekNev || data.nev;
+                document.getElementById('display-name').innerHTML = `${myName} <span style="color:#28a745; font-size:16px; margin-left:10px; text-shadow:1px 1px 2px black;">${myPct}%</span>`;
+                
                 document.getElementById('display-server').textContent = data.szerver;
                 document.getElementById('display-alliance').textContent = data.szovetseg;
-                window.userInventory = data.inventory || {}; 
+                
                 renderAlbums(); 
                 showScreen(mainScreen);
                 updateTradeBadges();
