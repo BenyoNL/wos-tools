@@ -631,7 +631,6 @@ window.isRegistering = false; // Alapértelmezett állapot
                     let isComplete = true;
                     for(let p = 1; p <= card.pieceCount; p++) {
                         const pid = `${card.id}_piece_${p}`;
-if (card.forbiddenPieces && card.forbiddenPieces.includes(p)) continue;
                         if(!window.userInventory[pid] || window.userInventory[pid] === 0) { isComplete = false; break; }
                     }
                     if(isComplete) completedCards++;
@@ -1182,6 +1181,7 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 </body>
 
 </html>
+
 
 
 
