@@ -418,6 +418,22 @@ document.getElementById('lang-selector').addEventListener('change', (e) => {
         document.getElementById('btn-match-global').addEventListener('click', () => runMatchmaker('global'));
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
 
+// Segédfüggvény a keresőből történő azonnali módosításhoz
+        window.searchUpdateQty = function(pieceId, change, elementId) {
+            let currentQty = window.userInventory[pieceId] || 0;
+            currentQty += change;
+            if (currentQty < 0) currentQty = 0; 
+            window.userInventory[pieceId] = currentQty; 
+            
+            const qtyElement = document.getElementById(elementId);
+            if (qtyElement) {
+                qtyElement.textContent = currentQty;
+                qtyElement.style.color = currentQty > 0 ? '#28a745' : '#aaa';
+            }
+            triggerAutoSave();
+        };
+
+        // ÚJ, FELTURBÓZOTT KERESŐ
         document.getElementById('search-input').addEventListener('input', (e) => {
             const queryText = e.target.value.toLowerCase().trim();
             if (queryText === '') {
@@ -436,17 +452,52 @@ document.getElementById('lang-selector').addEventListener('change', (e) => {
                     foundSomething = true;
                     const res = document.createElement('div');
                     res.className = 'list-item search-item';
-                    res.innerHTML = `📖 ${aName}`;
+                    res.innerHTML = `📖 ${aName} <span style="float:right; color:#e09f3e;">Ugrás az albumhoz ❯</span>`;
                     res.onclick = () => renderCards(album);
                     viewSearch.appendChild(res);
                 }
                 album.cards.forEach(card => {
                     if (card.name.toLowerCase().includes(queryText)) {
                         foundSomething = true;
+                        
                         const res = document.createElement('div');
                         res.className = 'list-item search-item card-item';
-                        res.innerHTML = `${card.name} <span>${aName}</span>`;
-                        res.onclick = () => renderPuzzle(album, card);
+                        res.style.cursor = 'default'; // Ne a teljes doboz legyen kattintható, csak a gombok
+                        
+                        // Kártya fejléc
+                        let html = `
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:10px; margin-bottom:10px;">
+                            <div>
+                                <strong style="color:#e09f3e; font-size:18px;">${card.name}</strong> <span style="color:#ffc107; font-size:14px;">(${card.stars}⭐)</span><br>
+                                <span style="color:#aaa; font-size:13px;">${aName}</span>
+                            </div>
+                            <button class="btn btn-blue btn-small" style="margin:0; width:auto;" onclick="renderPuzzle(window.gameData.find(a=>a.id==='${album.id}'), window.gameData.find(a=>a.id==='${album.id}').cards.find(c=>c.id==='${card.id}'))">Ugrás a kártyához ❯</button>
+                        </div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                        `;
+                        
+                        // Puzzle darabok és +/- gombok generálása
+                        for(let p = 1; p <= card.pieceCount; p++) {
+                            const pieceId = `${card.id}_piece_${p}`;
+                            const currentQty = window.userInventory[pieceId] || 0;
+                            const color = currentQty > 0 ? '#28a745' : '#aaa';
+                            
+                            html += `
+                                <div style="display:flex; justify-content:space-between; align-items:center; background:rgba(0,0,0,0.5); padding:6px 10px; border-radius:8px;">
+                                    <button class="btn btn-red" style="margin:0; width:45px; padding:2px 0; font-size:22px; box-shadow:none;" onclick="searchUpdateQty('${pieceId}', -1, 'sqty-${pieceId}')">➖</button>
+                                    
+                                    <div style="flex-grow:1; text-align:center; font-size:15px; color:#fff;">
+                                        ${card.name} / ${p}. darab<br>
+                                        <span style="font-size:13px; color:#888;">(Megvan: <b id="sqty-${pieceId}" style="color:${color}; font-size:15px;">${currentQty}</b> db)</span>
+                                    </div>
+                                    
+                                    <button class="btn btn-green" style="margin:0; width:45px; padding:2px 0; font-size:22px; box-shadow:none;" onclick="searchUpdateQty('${pieceId}', 1, 'sqty-${pieceId}')">➕</button>
+                                </div>
+                            `;
+                        }
+                        
+                        html += `</div>`;
+                        res.innerHTML = html;
                         viewSearch.appendChild(res);
                     }
                 });
@@ -1194,6 +1245,7 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 </body>
 
 </html>
+
 
 
 
