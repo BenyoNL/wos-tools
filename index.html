@@ -1129,10 +1129,38 @@ function updateQty(pieceId, change) {
             player.src = ""; // Kiürítjük, hogy ne töltsön feleslegesen
             modal.classList.remove('show');
         });
+
+		// --- PROFIL MENTÉSE ÉS TOVÁBBLÉPÉS JAVÍTÁS ---
+document.getElementById('save-profile-btn').addEventListener('click', () => {
+    const nickname = document.getElementById('nickname').value.trim();
+    const server = document.getElementById('server-number').value.trim();
+    const alliance = document.getElementById('alliance-name').value.trim();
+
+    if (nickname === "" || server === "" || alliance === "") {
+        alert("Kérlek, tölts ki minden mezőt!");
+        return;
+    }
+
+    // Adatok mentése a böngésző memóriájába (opcionális)
+    localStorage.setItem('userNickname', nickname);
+    localStorage.setItem('userServer', server);
+    localStorage.setItem('userAlliance', alliance);
+
+    // Profil ablak elrejtése és a főmenü megjelenítése
+    document.getElementById('setup-profile-screen').style.display = 'none';
+    document.getElementById('main-menu').style.display = 'block';
+    
+    // Üdvözlő szöveg frissítése a névvel
+    const welcomeMsg = document.querySelector('#main-menu h2');
+    if(welcomeMsg) {
+        welcomeMsg.textContent = "Üdvözlünk, " + nickname + "!";
+    }
+});
     </script>
 </body>
 
 </html>
+
 
 
 
