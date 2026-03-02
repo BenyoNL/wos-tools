@@ -245,13 +245,13 @@
 
         // IDE MÁSOLD BE A SAJÁT KULCSODAT!
 const firebaseConfig = {
-  apiKey: "AIzaSyDeEK5nOuvuELtGd61Q7W04uKGcJqG1L1U",
-  authDomain: "tundra-album.firebaseapp.com",
-  projectId: "tundra-album",
-  storageBucket: "tundra-album.firebasestorage.app",
-  messagingSenderId: "469371801375",
-  appId: "1:469371801375:web:71007b232a98fe8bdbea2a",
-  measurementId: "G-2LQT9X23X5"
+  apiKey: "AIzaSyAJL6C86K23lCedJp1mnU66wmRV24FJ424",
+  authDomain: "test---tundratrade.firebaseapp.com",
+  projectId: "test---tundratrade",
+  storageBucket: "test---tundratrade.firebasestorage.app",
+  messagingSenderId: "557714016162",
+  appId: "1:557714016162:web:ff2596f3e8ceb2cfac54fb",
+  measurementId: "G-J1X9XR3JSZ"
 };
 
         const app = initializeApp(firebaseConfig);
@@ -279,8 +279,7 @@ const i18n = {
         const albumAdatok = [
             { id: "album_0", kepFajlNev: "Rekindled_Flames.jpg", en: "Rekindled Flames", de: "Wiederentfachte Flammen", hu: "Újraéledő Lángok", fr: "Flammes ravivées", tr: "Yeniden Alevlenen", ru: "Вновь зажженное", ar: "نيران مشتعلة",
               kartyaNevek: ["Furnace", "City Founding", "Dawn Alliance", "Decisions", "Menace Afoot", "Heroes", "Food Power", "A New Order", "True Explorer"],
-darabszamok: [9, 9, 9, 12, 12, 12, 15, 15, 15],
-tiltottDarabok: [[], [], [], [], [], [], [], [], [13, 14, 15]]
+darabszamok: [9, 9, 9, 12, 12, 12, 15, 15, 15] 
             },
             { id: "album_1", kepFajlNev: "Explore_the_World.jpg", en: "Explore the World", de: "Erkunde die Welt", hu: "Fedezd fel a Világot", fr: "Explorer le monde", tr: "Dünyayı Keşfet", ru: "Исследуй мир", ar: "استكشف العالم",
               kartyaNevek: ["War on Winter", "Exploration Journal", "Hunting Guild", "The Raging Bear", "Treasure Kingdom", "Wealth Is Knowledge", "Ruins of Old", "Cryptid Days", "Call of the Stars"],
@@ -292,8 +291,7 @@ darabszamok: [9, 12, 12, 12, 15, 15, 15, 18, 18]
             },
             { id: "album_3", kepFajlNev: "Tundra_Alliance.jpg", en: "Tundra Alliance", de: "Tundra-Allianz", hu: "Tundra Szövetség", fr: "Alliance de la Toundra", tr: "Tundra İttifakı", ru: "Альянс Тундры", ar: "تحالف التندرا",
               kartyaNevek: ["Alliance-Building", "One Heart", "Heroes' Aid", "Alliance Resources", "Twisted Obsession", "Virtues and Crimes", "Children of the \"New World\"", "Horn of Command", "Battlefield Epic"],
-darabszamok: [12, 12, 15, 15, 15, 18, 18, 18, 18],
-
+darabszamok: [12, 12, 15, 15, 15, 18, 18, 18, 18] 
             },
             { id: "album_4", kepFajlNev: "Battlefield_Epic.jpg", en: "Battlefield Epic", de: "Schlachtfeld-Epos", hu: "Csatatéri Eposz", fr: "Épopée du champ de bataille", tr: "Savaş Alanı Destanı", ru: "Эпос поля боя", ar: "ملحمة ساحة المعركة",
               kartyaNevek: ["Imperial Foundry", "King of the Battlefield", "Orichalcum", "City of Kings", "Pilot's Paradise", "Great Contest", "Canyon Clash", "Hero's Glory", "Grand Banquet"],
@@ -354,14 +352,13 @@ darabszamok: [12, 15, 15, 15, 15, 18, 18, 18, 18]
                 cards: Array.from({length: 9}, (_, cIdx) => { 
                     const cName = album.kartyaNevek ? album.kartyaNevek[cIdx] : `Card ${cIdx+1}`;
                     const safeCardName = cName.replace(/ /g, '_').replace(/['"]/g, '');
-return {
-                    id: `${album.id}_card_${cIdx+1}`, 
-                    name: cName,
-                    image: `images/${baseAlbumName}_${safeCardName}.jpg`, 
-                    pieceCount: album.darabszamok ? album.darabszamok[cIdx] : 9,
-                    // ---> EZT A SORT ADJAD HOZZÁ: <---
-                    forbiddenPieces: album.tiltottDarabok ? album.tiltottDarabok[cIdx] : []
-                };
+                    return {
+                        id: `${album.id}_card_${cIdx+1}`, 
+                        name: cName,
+                        image: `images/${baseAlbumName}_${safeCardName}.jpg`, 
+                        pieceCount: album.darabszamok ? album.darabszamok[cIdx] : 9
+                    };
+                })
             };
         });
 
@@ -686,15 +683,14 @@ window.isRegistering = false; // Alapértelmezett állapot
             const gridContainer = document.createElement('div');
             gridContainer.className = 'card-grid-container';
 
-album.cards.forEach(card => {
-                    let isComplete = true; 
-                    for(let p = 1; p <= card.pieceCount; p++) {
-                        const pid = `${card.id}_piece_${p}`;
-                        // INNEN KIVETTÜK A TILTÁST, mert a kártya befejezéséhez kellenek az 5 csillagosok is!
-                        if(!window.userInventory[pid] || window.userInventory[pid] === 0) { isComplete = false; break; }
+            album.cards.forEach(card => {
+                let collectedPieces = 0;
+                for(let p = 1; p <= card.pieceCount; p++) {
+                    const pid = `${card.id}_piece_${p}`;
+                    if(window.userInventory[pid] && window.userInventory[pid] > 0) {
+                        collectedPieces++;
                     }
-                    if(isComplete) completedCards++; 
-                });
+                }
                 const isComplete = collectedPieces === card.pieceCount;
                 const progressPct = Math.round((collectedPieces / card.pieceCount) * 100);
 
@@ -987,7 +983,6 @@ function updateQty(pieceId, change) {
                         const aName = album.names[window.currLang] || album.names['en'];
                         album.cards.forEach(card => {
                             for(let p = 1; p <= card.pieceCount; p++) {
-if (card.forbiddenPieces && card.forbiddenPieces.includes(p)) continue;
                                 const pieceId = `${card.id}_piece_${p}`;
                                 const myQty = window.userInventory[pieceId] || 0;
                                 const otherQty = otherInv[pieceId] || 0;
@@ -1100,7 +1095,7 @@ if (card.forbiddenPieces && card.forbiddenPieces.includes(p)) continue;
                                 const pieceId = `${card.id}_piece_${p}`;
                                 const myQty = window.userInventory[pieceId] || 0;
                                 const otherQty = otherInv[pieceId] || 0;
-if (card.forbiddenPieces && card.forbiddenPieces.includes(p)) continue;
+
                                 if ((myQty === 0 && otherQty >= 2) || (myQty >= 2 && otherQty === 0)) {
                                     userTradeCount++;
                                 }
@@ -1180,9 +1175,6 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 </body>
 
 </html>
-
-
-
 
 
 
