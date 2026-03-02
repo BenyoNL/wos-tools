@@ -1131,10 +1131,11 @@ function updateQty(pieceId, change) {
         });
 
 		// --- PROFIL MENTÉSE ÉS TOVÁBBLÉPÉS JAVÍTÁS ---
+/ --- PROFIL MENTÉSE ÉS TOVÁBBLÉPÉS JAVÍTÁS ---
 document.getElementById("save-profile-btn").addEventListener("click", async () => {
-  const name = document.getElementById("player-name").value.trim();
-  const server = document.getElementById("server-number").value.trim();
-  const alliance = document.getElementById("alliance-name").value.trim().toUpperCase();
+  const jatekNev = document.getElementById("player-name").value.trim();
+  const szerver = document.getElementById("server-number").value.trim();
+  const szovetseg = document.getElementById("alliance-name").value.trim().toUpperCase();
 
   if (!name || !server || alliance.length !== 3) {
     document.getElementById("profile-error").innerText =
@@ -1144,17 +1145,17 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 
   try {
     await setDoc(doc(db, "jatekosok", currentUserUid), {
-      name,
-      server,
-      alliance
+      jatekNev,
+      szerver,
+      szovetseg
     }, { merge: true });
 
     document.getElementById("profile-setup-screen").style.display = "none";
     document.getElementById("main-app-screen").style.display = "block";
 
-    document.getElementById("display-name").innerText = name;
-    document.getElementById("display-server").innerText = server;
-    document.getElementById("display-alliance").innerText = alliance;
+    document.getElementById("display-name").innerText = jatekNev;
+    document.getElementById("display-server").innerText = szerver;
+    document.getElementById("display-alliance").innerText = szovetseg;
 
     showToast();
   } catch (err) {
@@ -1165,6 +1166,7 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 </body>
 
 </html>
+
 
 
 
