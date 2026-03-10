@@ -194,6 +194,15 @@
         <div id="profile-error" style="color:#ff6b6b; margin-bottom:10px; font-weight:bold;"></div>
         <button id="save-profile-btn" class="btn btn-green">Save & Continue</button>
     </div>
+<div id="banned-screen" class="container" style="display: none;">
+    <h2 style="color: #ff6b6b; font-size: 28px;">Access Denied</h2>
+    <p style="color: #fff; font-size: 16px; line-height: 1.6; text-align: justify; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+        Dear User.<br><br>
+        I created this website to help players exchange puzzle pieces. 
+        Since someone removed me from the 2243 discord server without saying anything, I don't think it would be fair for you to use it. I'm sorry and thank you for your understanding. If you would like to continue using it, please talk to the admin of the Discord server.
+    </p>
+    <button id="banned-logout-btn" class="btn btn-back" style="margin-top: 20px; background: #c0392b; color: white; width: 100%;">Logout / Vissza a belépéshez</button>
+</div>
 
 <div id="main-app-screen" class="container" style="display: none;">
         
@@ -265,6 +274,7 @@ const firebaseConfig = {
   appId: "1:469371801375:web:71007b232a98fe8bdbea2a",
   measurementId: "G-2LQT9X23X5"
 };
+
 
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
@@ -571,6 +581,7 @@ document.getElementById('lang-selector').addEventListener('change', (e) => {
         document.getElementById('btn-match-state').addEventListener('click', () => runMatchmaker('state'));
         document.getElementById('btn-match-global').addEventListener('click', () => runMatchmaker('global'));
         document.getElementById('logout-btn').addEventListener('click', () => signOut(auth));
+document.getElementById('banned-logout-btn').addEventListener('click', () => signOut(auth));
 		
 
             // Segédfüggvény a keresőből történő azonnali módosításhoz
@@ -702,17 +713,19 @@ res.style.cursor = 'default';
         });
 
 const authScreen = document.getElementById('auth-screen');
-        const profileScreen = document.getElementById('profile-setup-screen');
-        const mainScreen = document.getElementById('main-app-screen');
-        const registerScreen = document.getElementById('register-screen'); // <-- ÚJ
+const profileScreen = document.getElementById('profile-setup-screen');
+const mainScreen = document.getElementById('main-app-screen');
+const registerScreen = document.getElementById('register-screen');
+const bannedScreen = document.getElementById('banned-screen'); // <-- TILTOTT KÉPERNYŐ
 
-        function showScreen(screen) {
-            authScreen.style.display = 'none';
-            profileScreen.style.display = 'none';
-            mainScreen.style.display = 'none';
-            if(registerScreen) registerScreen.style.display = 'none';
-            screen.style.display = 'block';
-        }
+function showScreen(screen) {
+    authScreen.style.display = 'none';
+    profileScreen.style.display = 'none';
+    mainScreen.style.display = 'none';
+    if(registerScreen) registerScreen.style.display = 'none';
+    if(bannedScreen) bannedScreen.style.display = 'none';
+    screen.style.display = 'block';
+}
 
 // Átlépés az új regisztrációs felületre
         document.getElementById('email-register-btn').addEventListener('click', () => {
@@ -791,6 +804,11 @@ async function checkUserProfile(uid) {
             const docSnap = await getDoc(doc(db, "jatekosok", uid));
             if (docSnap.exists() && docSnap.data().szerver) {
                 const data = docSnap.data();
+// --- ÚJ: 2243-as szerver kitiltása ---
+        if (data.szerver === "2243" || data.szerver === 2243) {
+            showScreen(bannedScreen);
+            return; // Ezzel megállítjuk a további kód lefutását, nem tölti be az appot
+        }
                 window.userInventory = data.inventory || {}; 
                 
                 // --- SAJÁT SZÁZALÉK KISZÁMOLÁSA ---
@@ -1384,7 +1402,11 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
       szerver,
       szovetseg
     }, { merge: true });
-
+// --- ÚJ: 2243 ellenőrzés közvetlenül profil mentés után ---
+    if (szerver === "2243" || szerver === 2243) {
+        showScreen(document.getElementById("banned-screen"));
+        return;
+    }
     document.getElementById("profile-setup-screen").style.display = "none";
     document.getElementById("main-app-screen").style.display = "block";
 
@@ -1400,8 +1422,6 @@ document.getElementById("save-profile-btn").addEventListener("click", async () =
 </body>
 
 </html>
-
-
 
 
 
